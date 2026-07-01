@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\tkbay\\OneDrive\\Desktop\\myInternProject\\Backend\\MyInternProject.API\\MyInternProject.API.csproj": {}
+    "C:\\Users\\tkbay\\OneDrive\\Desktop\\myInternProject\\Backend\\myInternProject.API\\MyInternProject.API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\tkbay\\OneDrive\\Desktop\\myInternProject\\Backend\\MyInternProject.API\\MyInternProject.API.csproj": {
+    "C:\\Users\\tkbay\\OneDrive\\Desktop\\myInternProject\\Backend\\myInternProject.API\\MyInternProject.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\tkbay\\OneDrive\\Desktop\\myInternProject\\Backend\\MyInternProject.API\\MyInternProject.API.csproj",
+        "projectUniqueName": "C:\\Users\\tkbay\\OneDrive\\Desktop\\myInternProject\\Backend\\myInternProject.API\\MyInternProject.API.csproj",
         "projectName": "MyInternProject.API",
-        "projectPath": "C:\\Users\\tkbay\\OneDrive\\Desktop\\myInternProject\\Backend\\MyInternProject.API\\MyInternProject.API.csproj",
+        "projectPath": "C:\\Users\\tkbay\\OneDrive\\Desktop\\myInternProject\\Backend\\myInternProject.API\\MyInternProject.API.csproj",
         "packagesPath": "C:\\Users\\tkbay\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\tkbay\\OneDrive\\Desktop\\myInternProject\\Backend\\MyInternProject.API\\obj\\",
+        "outputPath": "C:\\Users\\tkbay\\OneDrive\\Desktop\\myInternProject\\Backend\\myInternProject.API\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\tkbay\\AppData\\Roaming\\NuGet\\NuGet.Config"
