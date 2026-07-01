@@ -8,8 +8,8 @@ public class TaskItem
 
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public int Priority { get; set; } = 1;
-    public int Status { get; set; } = 0;
+    public Priority Priority { get; set; } = Priority.Low;
+    public Status Status { get; set; } = Status.Pending;
     public DateTime DueDate { get; set; }
     public DateTime CompletedAt { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
