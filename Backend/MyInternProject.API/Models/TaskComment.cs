@@ -12,6 +12,11 @@ public class TaskComment
     public string Comment {get; set;} = string.Empty;
     public DateTime CreatedAt {get; set;} = DateTime.UtcNow;
 
+    //-------------------NAVIGATION PROP ------------------------
+
+    public TaskItem TaskItem {get; set;} = null!;
+    public User User {get; set;} = null!;
+
 
 
 

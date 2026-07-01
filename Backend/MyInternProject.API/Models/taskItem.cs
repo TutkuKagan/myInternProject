@@ -14,4 +14,11 @@ public class TaskItem
     public DateTime CompletedAt { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+
+    //navigation prop ---------(for userid and categoryid)---------------
+    public User User {get; set;} = null!;
+    public Category Category {get; set;} = null!;
+    public ICollection<TaskAttachment> TaskAttachments {get; set;} = new List<TaskAttachment>();
+    public ICollection<TaskComment> TaskComments {get; set;} = new List<TaskComment>();
 }

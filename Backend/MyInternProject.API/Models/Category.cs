@@ -14,6 +14,11 @@ public class Category
     public string Color {get; set;} = "#007bff";
     public DateTime CreatedAt {get; set;} = DateTime.UtcNow;
 
+    //---------------------------------- NAVIGATION PROP---------------------------------------
+    
+    public ICollection<TaskItem> TaskItems {get; set;} = new List<TaskItem>();
+
+    public User User {get; set;} = null!;
 
 
 

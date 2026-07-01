@@ -14,4 +14,10 @@ public class TaskAttachment
     public string ContentType {get; set;} = string.Empty;
     public DateTime UploadedAt {get; set;} = DateTime.UtcNow;
 
+
+
+     //---------------------------------- NAVIGATION PROP-------------------------------------
+
+     public TaskItem taskItem {get; set;} = null!;
+
 }

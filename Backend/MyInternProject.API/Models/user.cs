@@ -11,4 +11,22 @@
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public bool IsActive { get; set; } = true;
+
+
+        //---------------------------------- NAVIGATION PROP------------------------------------------
+        
+        
+        //--------------------(any user can have more than 1 task ) --------------
+        public ICollection<TaskItem> TaskItems {get; set;} = new List<TaskItem>();
+        
+        //-------------- (any user can have more than 1 category) ---------------------
+        public ICollection<Category> Categories {get; set;} = new List<Category>();
+        
+        //more than one comment
+        public ICollection<TaskComment> TaskComments {get; set;} = new List<TaskComment>();
+
+        
+
+
+
     }
