@@ -17,9 +17,23 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//-----------------------con String------------------
-var connectionString = builder.Configuration.GetConnectionString("PostgreSQLConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(optionsAction => optionsAction.UseNpgsql(connectionString));
+//-------------------------------------------con String----------------------------------
+string? dbChoice = builder.Configuration["DatabaseProvider"];
+    if(dbChoice == "PostgreSQL")
+{
+    var connectionString = builder.Configuration.GetConnectionString("PostgreSQLConnection");
+    builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
+}
+    else if (dbChoice == "Oracle")
+{
+    var connectionString = builder.Configuration.GetConnectionString("OracleConnection");
+    builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseOracle(connectionString));
+}
+    else
+{
+    throw new  Exception("Invalid DatabaseProvider choice in appsettings.json"); 
+}
+builder.Services.AddControllers();
 
 
 
