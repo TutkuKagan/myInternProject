@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using myInternProject.API.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -13,6 +16,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//-----------------------con String------------------
+var connectionString = builder.Configuration.GetConnectionString("PostgreSQLConnection");
+builder.Services.AddDbContext<ApplicationDbContext>(optionsAction => optionsAction.UseNpgsql(connectionString));
+
+
+
 
 app.UseHttpsRedirection();
 
