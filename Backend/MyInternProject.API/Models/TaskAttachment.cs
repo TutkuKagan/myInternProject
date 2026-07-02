@@ -4,8 +4,8 @@ namespace myInternProject.API.Models;
 
 public class TaskAttachment
 {
-    public int Id {get; set;}
-    public int TaskId {get; set;}
+    public Guid Id {get; set;}
+    public Guid TaskId {get; set;}
 
 
     public string FileName {get; set;} = string.Empty;
@@ -18,6 +18,6 @@ public class TaskAttachment
 
      //---------------------------------- NAVIGATION PROP-------------------------------------
 
-     public TaskItem taskItem {get; set;} = null!;
+     public TaskItem TaskItem {get; set;} = null!;
 
 }
