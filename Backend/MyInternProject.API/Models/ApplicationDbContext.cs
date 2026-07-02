@@ -46,6 +46,22 @@ public class ApplicationDbContext : DbContext
 
             entity.Property(u => u.IsActive).HasDefaultValue(true);
 
+
+            //Demo User
+
+            entity.HasData(new User { 
+                Id = new Guid("11111111-1111-1111-1111-111111111111"),
+                Email = "deneme@gmail.com" ,
+                Username = "DemoPlayer1",
+                PasswordHash = "Deneme",
+                FirstName = "Tutku",
+                LastName = "Bayir",
+                CreatedAt = DateTime.UtcNow, 
+                UpdatedAt = DateTime.UtcNow,
+                IsActive = true,
+                    });
+
+
         });
 
         modelBuilder.Entity<TaskItem>(entity =>
@@ -141,6 +157,8 @@ public class ApplicationDbContext : DbContext
 
 
         });
+
+        
 
 
     }
