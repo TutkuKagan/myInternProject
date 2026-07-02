@@ -8,14 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
 
 //-------------------------------------------con String----------------------------------
 string? dbChoice = builder.Configuration["DatabaseProvider"];
@@ -35,7 +28,13 @@ string? dbChoice = builder.Configuration["DatabaseProvider"];
 }
 builder.Services.AddControllers();
 
+var app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 
 app.UseHttpsRedirection();
