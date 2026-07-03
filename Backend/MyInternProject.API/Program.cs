@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using myInternProject.API.Mapping;
 using myInternProject.API.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +28,10 @@ string? dbChoice = builder.Configuration["DatabaseProvider"];
     throw new  Exception("Invalid DatabaseProvider choice in appsettings.json"); 
 }
 builder.Services.AddControllers();
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<MappingProfile>();
+});
 
 var app = builder.Build();
 
