@@ -5,7 +5,7 @@ namespace myInternProject.API.DTOs;
 
 public class TaskItemDTO
 {
-        public Guid Id { get; set; }
+    public Guid Id { get; set; }
     public Guid UserId { get; set; }
     public Guid CategoryId { get; set; }
 
