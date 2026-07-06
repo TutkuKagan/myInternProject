@@ -20,6 +20,12 @@ public class UserService : IUserService
 
     public async Task<UserDTO> Register (CreateUserDTO createuserDto)
     {
+            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Username == createuserDto.Username);
+            if (existingUser != null)
+        {
+            throw new Exception("Username already taken");
+        }
+
             var userEntity = _mapper.Map<User>(createuserDto);
             _context.Users.Add(userEntity);
             await _context.SaveChangesAsync();
@@ -33,6 +39,11 @@ public class UserService : IUserService
             //note to self: find can only find id's whereas firstorDefault finds the first one, or returns null(default)
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == loginDto.Username && u.PasswordHash == loginDto.Password);
             
+            if(user == null)
+        {
+            throw new Exception("Username or Password is wrong");
+        }
+
             return _mapper.Map<UserDTO>(user);
         
     }
@@ -54,12 +65,21 @@ public class UserService : IUserService
     {
         var userEntity = await _context.Users.FindAsync(id);
 
+        if(userEntity == null)
+        {
+            throw new Exception("User cannot be found.");
+        }
+
         return _mapper.Map<UserDTO>(userEntity);
     }
 
     public async Task<UserDTO> UpdateUser (Guid id ,UpdateUserDTO updateUserDto)
     {
         var notUpdatedUser = await _context.Users.FindAsync(id);
+        if(notUpdatedUser == null)
+        {
+            throw new Exception("User cannot be found.");
+        }
 
         var UpdatedUser = _mapper.Map(updateUserDto,notUpdatedUser);
         await _context.SaveChangesAsync();

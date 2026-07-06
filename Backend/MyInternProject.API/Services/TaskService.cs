@@ -19,6 +19,12 @@ public class TaskService : ITaskService
     
     public async Task<TaskItemDTO> CreateTask (CreateTaskDTO createTaskDto)
     {
+            var existingTask = await _context.Tasks.FirstOrDefaultAsync(t => t.Title == createTaskDto.Title);
+                if(existingTask != null)
+                      {
+                     throw new Exception("This task is already included.");
+                          }             
+
             var taskEntity = _mapper.Map<TaskItem>(createTaskDto);
             _context.Tasks.Add(taskEntity);
             await _context.SaveChangesAsync();
@@ -29,14 +35,15 @@ public class TaskService : ITaskService
 
     public async Task<TaskItemDTO> UpdateTask (Guid id ,UpdateTaskDTO updateTaskDto)
     {
-        var notUpdatedTask = await _context.Tasks.FindAsync(id);
 
+        var notUpdatedTask = await _context.Tasks.FindAsync(id);
+        if (notUpdatedTask == null)
+        {
+            throw new Exception("There is no such Task.");
+        }
         var UpdatedTask = _mapper.Map(updateTaskDto,notUpdatedTask);
         await _context.SaveChangesAsync();
-
         return _mapper.Map<TaskItemDTO>(UpdatedTask);
-
-        
     }
 
     public async Task<IEnumerable<TaskItemDTO>> FilterListTask (TaskFilterDTO taskFilterDto)
@@ -52,6 +59,10 @@ public class TaskService : ITaskService
     public async Task<TaskItemDTO> GetById (Guid id)
     {
         var taskEntity = await _context.Tasks.FindAsync(id);
+        if(taskEntity == null)
+        {
+            throw new Exception("Task cannot be found.");
+        }
 
         return _mapper.Map<TaskItemDTO>(taskEntity);
     }

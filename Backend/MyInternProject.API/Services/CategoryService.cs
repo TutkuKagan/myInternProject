@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using myInternProject.API.DTOs;
 using myInternProject.API.Models;
 
@@ -19,17 +20,26 @@ public class CategoryService : ICategoryService
 
     public async Task<CategoryDTO> CreateCategory (CreateCategoryDTO createCategoryDto)
     {
+            var existingCategory = await _context.Categories.FirstOrDefaultAsync(c => c.Name == createCategoryDto.Name || c.Description == createCategoryDto.Description);
+            if(existingCategory != null)
+                      {
+                     throw new Exception("This category is already included.");
+                          }    
+
             var categoryEntity = _mapper.Map<Category>(createCategoryDto);
+             
             _context.Categories.Add(categoryEntity);
             await _context.SaveChangesAsync();
-
             return _mapper.Map<CategoryDTO>(categoryEntity);
-        
     }
 
     public async Task<CategoryDTO> UpdateCategory (Guid id ,UpdateCategoryDTO updateCategoryDto)
     {
         var notUpdatedCategory = await _context.Categories.FindAsync(id);
+        if (notUpdatedCategory == null)
+        {
+            throw new Exception("There is no such Category.");
+        }
 
         var UpdatedCategory = _mapper.Map(updateCategoryDto,notUpdatedCategory);
         await _context.SaveChangesAsync();
@@ -54,6 +64,10 @@ public class CategoryService : ICategoryService
     public async Task<CategoryDTO> GetById (Guid id)
     {
         var categoryEntity = await _context.Categories.FindAsync(id);
+        if(categoryEntity == null)
+        {
+            throw new Exception("Category cannot be found.");
+        }
 
         return _mapper.Map<CategoryDTO>(categoryEntity);
     }
