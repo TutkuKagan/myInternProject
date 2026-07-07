@@ -1,6 +1,11 @@
+using System.Drawing;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using myInternProject.API.Mapping;
 using myInternProject.API.Models;
+using myInternProject.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +32,29 @@ string? dbChoice = builder.Configuration["DatabaseProvider"];
 {
     throw new  Exception("Invalid DatabaseProvider choice in appsettings.json"); 
 }
+var jwtKey = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]);
+var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+var jwtAudience = builder.Configuration["Jwt:Audience"];
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
+    {
+        opt.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
+            IssuerSigningKey = new SymmetricSecurityKey(jwtKey)
+        };
+        
+    });
+
+
+builder.Services.AddAuthorization();
+builder.Services.AddSingleton<IJwtService,JwtService>();
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(cfg =>
 {
@@ -41,7 +69,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.UseHttpsRedirection();
 
 var summaries = new[]
