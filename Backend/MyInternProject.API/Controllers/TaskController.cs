@@ -1,8 +1,7 @@
-namespace myInternProject.API.Controllers;
+namespace MyInternProject.API.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using myInternProject.API.DTOs;
-using myInternProject.API.Services;
+using MyInternProject.API.DTOs;
 using MyInternProject.API.Services;
 
 
@@ -19,6 +18,9 @@ public class TaskController : ControllerBase
             _taskService = taskService;
     }
 
+
+
+    [HttpPost("createTask")]
     public async Task<IActionResult> Create(CreateTaskDTO createTaskDto)
     {
         var newTask = await _taskService.CreateTask(createTaskDto);
@@ -26,6 +28,9 @@ public class TaskController : ControllerBase
         return Ok(newTask); 
     }
 
+
+
+    [HttpPut("updateTask")]
     public async Task<IActionResult> Update(Guid id, UpdateTaskDTO updateTaskDto)
     {
         var updatedTask = await _taskService.UpdateTask(id, updateTaskDto);
@@ -33,6 +38,9 @@ public class TaskController : ControllerBase
         return Ok(updatedTask);
     }
 
+
+
+    [HttpDelete("delete")]
     public async Task<IActionResult> Delete(Guid id)
     {
         await _taskService.Delete(id);
@@ -41,6 +49,8 @@ public class TaskController : ControllerBase
     }
 
 
+
+    [HttpGet("getById")]
     public async Task<IActionResult> GetById(Guid id)
     {
         var task = await _taskService.GetById(id);
@@ -48,14 +58,14 @@ public class TaskController : ControllerBase
         return Ok(task);
     }
 
+
+
+    [HttpGet("filter List")]
     public async Task<IActionResult> FilterListTask(TaskFilterDTO taskFilterDto)
     {
         var tasks = await _taskService.FilterListTask(taskFilterDto);
 
         return Ok(tasks);
     }
-
-
-
 
 }

@@ -1,7 +1,7 @@
-namespace myInternProject.API.Controllers;
+namespace MyInternProject.API.Controllers;
 using Microsoft.AspNetCore.Mvc;
-using myInternProject.API.DTOs;
-using myInternProject.API.Services;
+using MyInternProject.API.DTOs;
+using MyInternProject.API.Services;
 using MyInternProject.API.Services;
 
 [ApiController] 
@@ -17,7 +17,7 @@ public class AuthController : ControllerBase
         _userService = userService;
     }
 
-
+    [HttpPost("login")]
     public async Task<IActionResult> Login (LoginDTO loginDto)
     {
             var user = await _userService.Login(loginDto);
@@ -32,7 +32,7 @@ public class AuthController : ControllerBase
 
     }
 
-
+    [HttpPost("register")]
     public async Task<IActionResult> Register(CreateUserDTO createUserDto)
     {
 
@@ -41,7 +41,7 @@ public class AuthController : ControllerBase
     }
 
 
-
+    [HttpGet("profile")]
     public async Task<IActionResult> GetProfile()
     {
         var userIdClaim = User.FindFirst(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Sub)?.Value;

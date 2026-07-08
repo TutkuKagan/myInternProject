@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace myInternProject.API.Services;
+namespace MyInternProject.API.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;

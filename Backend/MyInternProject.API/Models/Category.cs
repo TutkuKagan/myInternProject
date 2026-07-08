@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace myInternProject.API.Models;
+namespace MyInternProject.API.Models;
 
 
 public class Category

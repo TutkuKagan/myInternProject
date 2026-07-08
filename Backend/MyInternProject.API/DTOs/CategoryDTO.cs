@@ -1,4 +1,4 @@
-namespace myInternProject.API.DTOs;
+namespace MyInternProject.API.DTOs;
 
 public class CategoryDTO
 {

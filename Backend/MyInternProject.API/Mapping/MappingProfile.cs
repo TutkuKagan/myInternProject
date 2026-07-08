@@ -1,8 +1,8 @@
 using AutoMapper;
-using myInternProject.API.DTOs;
-using myInternProject.API.Models;
+using MyInternProject.API.DTOs;
+using MyInternProject.API.Models;
 
-namespace myInternProject.API.Mapping;
+namespace MyInternProject.API.Mapping;
 
 
 public class MappingProfile:Profile

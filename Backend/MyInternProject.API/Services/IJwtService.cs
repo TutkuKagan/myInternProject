@@ -1,4 +1,4 @@
-namespace myInternProject.API.Services;
+namespace MyInternProject.API.Services;
 
 public interface IJwtService
 {

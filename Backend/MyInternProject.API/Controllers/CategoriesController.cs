@@ -1,7 +1,7 @@
-namespace myInternProject.API.Controllers;
+namespace MyInternProject.API.Controllers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using myInternProject.API.DTOs;
+using MyInternProject.API.DTOs;
 using MyInternProject.API.Services;
 
 
@@ -19,6 +19,8 @@ public class CategoriesController : ControllerBase
             _categoryService = categoryService;
         }
 
+
+        [HttpPost("createCategory")]
         public async Task<IActionResult> CreateCategory(CreateCategoryDTO createCategoryDto)
     {
         var newCategory = await _categoryService.CreateCategory(createCategoryDto);
@@ -27,6 +29,8 @@ public class CategoriesController : ControllerBase
 
     }
 
+
+    [HttpPut("updateCategory")]
     public async Task<IActionResult> UpdateCategory(Guid id, UpdateCategoryDTO updateCategoryDto)
     {
         var updatedCategory = await _categoryService.UpdateCategory(id, updateCategoryDto);
@@ -34,13 +38,16 @@ public class CategoriesController : ControllerBase
         return Ok(updatedCategory);
     }
 
+
+    [HttpDelete("delete")]
     public async Task<IActionResult> Delete(Guid id)
     {
         await _categoryService.Delete(id);
 
         return Ok("Category deleted successfully.");
     }
-
+    
+    [HttpGet("get with id")]
     public async Task<IActionResult> GetById(Guid id)
     {
         var category = await _categoryService.GetById(id);

@@ -1,4 +1,4 @@
-namespace myInternProject.API.DTOs;
+namespace MyInternProject.API.DTOs;
 using System.ComponentModel.DataAnnotations;
 
 public class CreateUserDTO

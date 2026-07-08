@@ -1,4 +1,4 @@
-using myInternProject.API.DTOs;
+using MyInternProject.API.DTOs;
 
 namespace MyInternProject.API.Services;
 

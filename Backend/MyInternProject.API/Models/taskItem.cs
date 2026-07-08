@@ -1,4 +1,4 @@
-namespace myInternProject.API.Models;
+namespace MyInternProject.API.Models;
 
 public class TaskItem
 {

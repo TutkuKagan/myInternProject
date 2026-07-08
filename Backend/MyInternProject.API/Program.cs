@@ -3,9 +3,9 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using myInternProject.API.Mapping;
-using myInternProject.API.Models;
-using myInternProject.API.Services;
+using MyInternProject.API.Mapping;
+using MyInternProject.API.Models;
+using MyInternProject.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,16 +62,18 @@ builder.Services.AddAutoMapper(cfg =>
 });
 
 
-
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITaskService, TaskService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 var app = builder.Build();
-app.UseExceptionHandler();
+
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseHttpsRedirection();
@@ -94,7 +96,7 @@ app.MapGet("/weatherforecast", () =>
     return forecast;
 })
 .WithName("GetWeatherForecast");
-
+app.MapControllers();
 app.Run();
 
 record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)

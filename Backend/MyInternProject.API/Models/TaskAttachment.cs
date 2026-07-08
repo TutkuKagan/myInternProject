@@ -1,6 +1,6 @@
 using System.Numerics;
 
-namespace myInternProject.API.Models;
+namespace MyInternProject.API.Models;
 
 public class TaskAttachment
 {

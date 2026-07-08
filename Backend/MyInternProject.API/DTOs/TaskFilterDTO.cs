@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
-using myInternProject.API.Models;
+using MyInternProject.API.Models;
 
-namespace myInternProject.API.DTOs;
+namespace MyInternProject.API.DTOs;
 
 
 public class TaskFilterDTO

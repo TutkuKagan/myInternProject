@@ -1,7 +1,7 @@
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using myInternProject.API.DTOs;
-using myInternProject.API.Models;
+using MyInternProject.API.DTOs;
+using MyInternProject.API.Models;
 
 namespace MyInternProject.API.Services;
 
