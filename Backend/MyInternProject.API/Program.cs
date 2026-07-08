@@ -52,7 +52,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         
     });
 
-
+builder.Services.AddProblemDetails();
 builder.Services.AddAuthorization();
 builder.Services.AddSingleton<IJwtService,JwtService>();
 builder.Services.AddControllers();
@@ -61,7 +61,10 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.AddProfile<MappingProfile>();
 });
 
+
+
 var app = builder.Build();
+app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {
