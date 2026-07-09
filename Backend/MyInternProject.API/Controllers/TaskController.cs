@@ -1,4 +1,6 @@
 namespace MyInternProject.API.Controllers;
+
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyInternProject.API.DTOs;
@@ -60,11 +62,29 @@ public class TaskController : ControllerBase
 
 
 
-    [HttpGet("filter List")]
+    [HttpGet("filterList")]
     public async Task<IActionResult> FilterListTask(TaskFilterDTO taskFilterDto)
     {
         var tasks = await _taskService.FilterListTask(taskFilterDto);
 
+        return Ok(tasks);
+    }
+
+
+    [HttpGet("search")] 
+    public async Task<IActionResult> GetSearch([FromQuery] TaskQueryDTO queryDto)
+    {
+        
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value 
+                          ?? User.FindFirst("sub")?.Value;
+
+        if (string.IsNullOrEmpty(userIdClaim))
+        {
+            return Unauthorized("User claim not found in token");
+        }
+
+        var userId = Guid.Parse(userIdClaim);
+        var tasks = await _taskService.GetFilteredTasksAsync(queryDto, userId);
         return Ok(tasks);
     }
 
