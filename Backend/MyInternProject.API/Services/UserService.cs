@@ -27,6 +27,7 @@ public class UserService : IUserService
         }
 
             var userEntity = _mapper.Map<User>(createuserDto);
+            userEntity.PasswordHash = createuserDto.Password;
             _context.Users.Add(userEntity);
             await _context.SaveChangesAsync();
 
