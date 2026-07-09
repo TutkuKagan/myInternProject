@@ -24,10 +24,18 @@ public class TaskController : ControllerBase
 
     [HttpPost("createTask")]
     public async Task<IActionResult> Create(CreateTaskDTO createTaskDto)
+    {   
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value 
+                      ?? User.FindFirst("sub")?.Value;
+        if (string.IsNullOrEmpty(userIdClaim))
     {
-        var newTask = await _taskService.CreateTask(createTaskDto);
+        return Unauthorized("User not found via token");
+    }
+
+    var userId = Guid.Parse(userIdClaim);
+    var newTask = await _taskService.CreateTask(createTaskDto, userId);
        
-        return Ok(newTask); 
+    return Ok(newTask);
     }
 
 
@@ -86,6 +94,16 @@ public class TaskController : ControllerBase
         var userId = Guid.Parse(userIdClaim);
         var tasks = await _taskService.GetFilteredTasksAsync(queryDto, userId);
         return Ok(tasks);
+    }
+
+
+    [HttpPost("upload-attachment")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> UploadAttachment([FromForm] UploadAttachmentDTO uploadDto)
+    {
+    
+    var attachment = await _taskService.UploadAttachmentAsync(uploadDto);
+    return Ok(attachment);
     }
 
 }

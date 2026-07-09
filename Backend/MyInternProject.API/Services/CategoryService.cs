@@ -18,15 +18,16 @@ public class CategoryService : ICategoryService
     }
 
 
-    public async Task<CategoryDTO> CreateCategory (CreateCategoryDTO createCategoryDto)
+    public async Task<CategoryDTO> CreateCategory(CreateCategoryDTO createCategoryDto, Guid userid)
     {
-            var existingCategory = await _context.Categories.FirstOrDefaultAsync(c => c.Name == createCategoryDto.Name || c.Description == createCategoryDto.Description);
+            var existingCategory = await _context.Categories.FirstOrDefaultAsync(c => c.UserId == userid && (c.Name == createCategoryDto.Name || c.Description == createCategoryDto.Description));
             if(existingCategory != null)
                       {
                      throw new Exception("This category is already included.");
                           }    
 
             var categoryEntity = _mapper.Map<Category>(createCategoryDto);
+            categoryEntity.UserId = userid;
              
             _context.Categories.Add(categoryEntity);
             await _context.SaveChangesAsync();

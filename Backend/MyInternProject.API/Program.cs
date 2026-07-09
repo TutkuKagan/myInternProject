@@ -104,6 +104,7 @@ app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 
 var summaries = new[]
 {

@@ -12,6 +12,8 @@ public class CreateTaskDTO
     [Required]
     public Priority Priority { get; set; } = Priority.Low;
     public DateTime DueDate { get; set; }
+    [Required]
+    public Guid? CategoryId { get; set; }
 
 
 }

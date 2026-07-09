@@ -22,9 +22,20 @@ public class CategoriesController : ControllerBase
 
         [HttpPost("createCategory")]
         public async Task<IActionResult> CreateCategory(CreateCategoryDTO createCategoryDto)
-    {
-        var newCategory = await _categoryService.CreateCategory(createCategoryDto);
+        {
+        
+          var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value 
+                      ?? User.FindFirst("sub")?.Value;
 
+         if (string.IsNullOrEmpty(userIdClaim))
+         {
+              return Unauthorized("User claim not found in token");
+         }
+
+        var userId = Guid.Parse(userIdClaim);
+
+        var newCategory = await _categoryService.CreateCategory(createCategoryDto, userId);
+       
         return Ok(newCategory);
 
     }

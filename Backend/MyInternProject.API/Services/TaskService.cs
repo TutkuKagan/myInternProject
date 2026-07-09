@@ -17,7 +17,7 @@ public class TaskService : ITaskService
         _mapper = mapper;
     }
     
-    public async Task<TaskItemDTO> CreateTask (CreateTaskDTO createTaskDto)
+    public async Task<TaskItemDTO> CreateTask (CreateTaskDTO createTaskDto, Guid userid)
     {
             var existingTask = await _context.Tasks.FirstOrDefaultAsync(t => t.Title == createTaskDto.Title);
                 if(existingTask != null)
@@ -26,6 +26,7 @@ public class TaskService : ITaskService
                           }             
 
             var taskEntity = _mapper.Map<TaskItem>(createTaskDto);
+            taskEntity.UserId = userid;
             _context.Tasks.Add(taskEntity);
             await _context.SaveChangesAsync();
 
@@ -81,7 +82,7 @@ public class TaskService : ITaskService
     }
 
     public async Task<IEnumerable<TaskItemDTO>> GetFilteredTasksAsync(TaskQueryDTO queryDto, Guid userId)
-{
+    {
     
     var query = _context.Tasks
         .Where(t => t.UserId == userId)
@@ -108,7 +109,7 @@ public class TaskService : ITaskService
 
     if (!string.IsNullOrWhiteSpace(queryDto.CategoryName))
     {
-        
+
     var catName = queryDto.CategoryName.Trim().ToLower();
     query = query.Where(t => t.Category != null && t.Category.Name.ToLower().Contains(catName));
     }
@@ -126,6 +127,56 @@ public class TaskService : ITaskService
         .ToListAsync();
 
     return _mapper.Map<IEnumerable<TaskItemDTO>>(tasks);
+    }
+
+    public async Task<TaskAttachment> UploadAttachmentAsync(UploadAttachmentDTO uploadDto)
+{
+    
+    var taskItem = await _context.Tasks.FindAsync(uploadDto.TaskItemId);
+    if (taskItem == null)
+    {
+        throw new Exception("Task not found");
+    }
+
+    
+    if (uploadDto.File == null || uploadDto.File.Length == 0)
+    {
+        throw new Exception("File is empty");
+    }
+
+    
+    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
+    if (!Directory.Exists(uploadsFolder))
+    {
+        Directory.CreateDirectory(uploadsFolder);
+    }
+
+    
+    var trustedFileName = $"{Guid.NewGuid()}_{Path.GetFileName(uploadDto.File.FileName)}";
+    var filePath = Path.Combine(uploadsFolder, trustedFileName);
+
+    
+    using (var stream = new FileStream(filePath, FileMode.Create))
+    {
+        await uploadDto.File.CopyToAsync(stream);
+    }
+
+    
+    var attachment = new TaskAttachment
+    {
+        Id = Guid.NewGuid(),
+        TaskId = uploadDto.TaskItemId,
+        FileName = uploadDto.File.FileName, 
+        FilePath = Path.Combine("Uploads", trustedFileName), 
+        ContentType = uploadDto.File.ContentType,
+        FileSize = uploadDto.File.Length,
+        UploadedAt = DateTime.UtcNow
+    };
+
+    _context.TaskAttachments.Add(attachment);
+    await _context.SaveChangesAsync();
+
+    return attachment;
 }
 
         

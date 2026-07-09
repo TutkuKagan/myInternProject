@@ -1,5 +1,5 @@
 using System.Numerics;
-
+using System.Text.Json.Serialization;
 namespace MyInternProject.API.Models;
 
 public class TaskAttachment
@@ -18,6 +18,7 @@ public class TaskAttachment
 
      //---------------------------------- NAVIGATION PROP-------------------------------------
 
+    [JsonIgnore]
      public TaskItem TaskItem {get; set;} = null!;
 
 }
