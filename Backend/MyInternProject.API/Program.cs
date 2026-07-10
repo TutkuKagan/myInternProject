@@ -1,4 +1,3 @@
-using System.Drawing;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -83,6 +82,19 @@ builder.Services.AddProblemDetails();
 builder.Services.AddAuthorization();
 builder.Services.AddSingleton<IJwtService,JwtService>();
 builder.Services.AddControllers();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000", "http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
+
+
 builder.Services.AddAutoMapper(cfg =>
 {
     cfg.AddProfile<MappingProfile>();
@@ -103,8 +115,10 @@ if (app.Environment.IsDevelopment())
 }
 app.UseExceptionHandler();
 app.UseAuthentication();
-app.UseAuthorization();
+app.UseMiddleware<MyInternProject.API.ExceptionHandlers.ExceptionHandler>();
 app.UseHttpsRedirection();
+app.UseCors("AllowFrontend");
+app.UseAuthorization();
 app.UseStaticFiles();
 
 var summaries = new[]
