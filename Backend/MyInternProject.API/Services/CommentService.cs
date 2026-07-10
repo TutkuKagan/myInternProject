@@ -9,16 +9,18 @@ public class CommentService : ICommentService
 {
     private readonly ApplicationDbContext _context;
     private readonly IMapper _mapper;
+    private readonly ILogger _logger;
 
-    public CommentService(ApplicationDbContext context, IMapper mapper)
+    public CommentService(ApplicationDbContext context, IMapper mapper, ILogger logger)
     {
         _context = context;
         _mapper = mapper;
+        _logger = logger;
     }
 
     public async Task<CommentDTO> AddComment(CreateCommentDTO createCommentDto, Guid userId)
     {
-        
+        _logger.LogInformation("Adding a Comment. User: {id}", userId);
         var taskExists = await _context.Tasks.AnyAsync(t => t.Id == createCommentDto.TaskId);
         if (!taskExists)
         {
@@ -33,6 +35,8 @@ public class CommentService : ICommentService
         _context.TaskComments.Add(commentEntity);
         await _context.SaveChangesAsync();
 
+
+        _logger.LogInformation("Added the Comment. Comment's TaskID: {Taskid}", createCommentDto.TaskId);
         return _mapper.Map<CommentDTO>(commentEntity);
     }
 

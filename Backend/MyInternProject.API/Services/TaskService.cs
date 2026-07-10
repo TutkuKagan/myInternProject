@@ -2,6 +2,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using MyInternProject.API.DTOs;
 using MyInternProject.API.Models;
+using Microsoft.Extensions.Logging;
 
 namespace MyInternProject.API.Services;
 
@@ -11,17 +12,23 @@ public class TaskService : ITaskService
     private readonly ApplicationDbContext _context;
     private readonly IMapper _mapper;
 
-    public TaskService(ApplicationDbContext context, IMapper mapper)
+    private readonly ILogger _logger;
+
+    public TaskService(ApplicationDbContext context, IMapper mapper, ILogger logger)
     {
         _context = context;
         _mapper = mapper;
+        _logger = logger;
     }
     
     public async Task<TaskItemDTO> CreateTask (CreateTaskDTO createTaskDto, Guid userid)
     {
+            _logger.LogInformation("Log of Creating a Task: {Title}, User: {UserId}", createTaskDto.Title, userid);
+
             var existingTask = await _context.Tasks.FirstOrDefaultAsync(t => t.Title == createTaskDto.Title);
                 if(existingTask != null)
                       {
+                        _logger.LogWarning("Couldnt create the task. Already included. Task:{Title}", createTaskDto.Title);
                      throw new Exception("This task is already included.");
                           }             
 
@@ -29,6 +36,8 @@ public class TaskService : ITaskService
             taskEntity.UserId = userid;
             _context.Tasks.Add(taskEntity);
             await _context.SaveChangesAsync();
+            
+            _logger.LogInformation("Succesfully created. Task ID: {TaskId}", taskEntity.Id);
 
             return _mapper.Map<TaskItemDTO>(taskEntity);
         
@@ -36,14 +45,19 @@ public class TaskService : ITaskService
 
     public async Task<TaskItemDTO> UpdateTask (Guid id ,UpdateTaskDTO updateTaskDto)
     {
+        _logger.LogInformation("Log of Updating a Task: {Title}, Taskid: {TaskId}", updateTaskDto.Title, id);
 
         var notUpdatedTask = await _context.Tasks.FindAsync(id);
         if (notUpdatedTask == null)
         {
+             _logger.LogWarning("Couldnt update the task.No such task. Task:{Title}", updateTaskDto.Title);
+
             throw new Exception("There is no such Task.");
         }
         var UpdatedTask = _mapper.Map(updateTaskDto,notUpdatedTask);
         await _context.SaveChangesAsync();
+
+        _logger.LogInformation("Succesfully updated. Task ID: {TaskId}", id);
         return _mapper.Map<TaskItemDTO>(UpdatedTask);
     }
 
@@ -70,6 +84,8 @@ public class TaskService : ITaskService
 
     public async  Task<bool> Delete (Guid id)
     {
+        _logger.LogWarning("Task is being deleted. TaskId: {TaskId}", id);
+
         var taskEntity = await _context.Tasks.FindAsync(id);
         if (taskEntity == null)
     {
@@ -78,6 +94,8 @@ public class TaskService : ITaskService
         _context.Tasks.Remove(taskEntity);
         await _context.SaveChangesAsync();
             
+
+            _logger.LogInformation("Task is deleted. TaskId: {TaskId}", id);
         return true;
     }
 

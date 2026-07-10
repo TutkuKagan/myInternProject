@@ -10,16 +10,19 @@ public class CategoryService : ICategoryService
 {
         private readonly ApplicationDbContext _context ;
         private readonly IMapper _mapper ;
+        private readonly ILogger _logger;
 
-        public CategoryService(ApplicationDbContext context, IMapper mapper)
+        public CategoryService(ApplicationDbContext context, IMapper mapper, ILogger logger)
     {
         _context = context;
         _mapper = mapper;
+        _logger = logger;
     }
 
 
     public async Task<CategoryDTO> CreateCategory(CreateCategoryDTO createCategoryDto, Guid userid)
     {
+             _logger.LogInformation("Creating the Category by user. User: {Userid}", userid);
             var existingCategory = await _context.Categories.FirstOrDefaultAsync(c => c.UserId == userid && (c.Name == createCategoryDto.Name || c.Description == createCategoryDto.Description));
             if(existingCategory != null)
                       {
@@ -31,11 +34,14 @@ public class CategoryService : ICategoryService
              
             _context.Categories.Add(categoryEntity);
             await _context.SaveChangesAsync();
+
+            _logger.LogInformation("Created the Category by user. Category: {Name}", createCategoryDto.Name);
             return _mapper.Map<CategoryDTO>(categoryEntity);
     }
 
     public async Task<CategoryDTO> UpdateCategory (Guid id ,UpdateCategoryDTO updateCategoryDto)
     {
+        _logger.LogInformation("Updating the Category. Category: {name}", updateCategoryDto.Name);
         var notUpdatedCategory = await _context.Categories.FindAsync(id);
         if (notUpdatedCategory == null)
         {
@@ -44,13 +50,15 @@ public class CategoryService : ICategoryService
 
         var UpdatedCategory = _mapper.Map(updateCategoryDto,notUpdatedCategory);
         await _context.SaveChangesAsync();
-
+        
+        _logger.LogInformation("Updating the Category. Category: {name}", updateCategoryDto.Name);
         return _mapper.Map<CategoryDTO>(UpdatedCategory);
 
     }
 
     public async  Task<bool> Delete (Guid id)
     {
+        _logger.LogInformation("Deleting the Category. Category: {id}", id);
         var categoryEntity = await _context.Categories.FindAsync(id);
         if (categoryEntity == null)
     {
@@ -59,6 +67,7 @@ public class CategoryService : ICategoryService
         _context.Categories.Remove(categoryEntity);
         await _context.SaveChangesAsync();
             
+        _logger.LogInformation("Deleted the Category. Category: {id}", id);    
         return true;
     }
 
