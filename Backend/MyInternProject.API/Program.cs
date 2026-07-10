@@ -92,6 +92,7 @@ builder.Services.AddAutoMapper(cfg =>
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
 var app = builder.Build();
 
 

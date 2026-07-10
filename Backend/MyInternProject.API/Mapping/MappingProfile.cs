@@ -25,6 +25,10 @@ public class MappingProfile:Profile
             CreateMap<UpdateTaskDTO, TaskItem>();
             CreateMap<CreateTaskDTO, TaskItem>();
             CreateMap<TaskFilterDTO, TaskItem>();
+
+
+            CreateMap<CreateCommentDTO, TaskComment>();
+            CreateMap<TaskComment, CommentDTO>();
         }
 
 }
