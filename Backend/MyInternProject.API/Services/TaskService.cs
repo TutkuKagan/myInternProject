@@ -130,7 +130,7 @@ public class TaskService : ITaskService
     }
 
     public async Task<TaskAttachment> UploadAttachmentAsync(UploadAttachmentDTO uploadDto)
-{
+    {
     
     var taskItem = await _context.Tasks.FindAsync(uploadDto.TaskItemId);
     if (taskItem == null)
@@ -177,6 +177,43 @@ public class TaskService : ITaskService
     await _context.SaveChangesAsync();
 
     return attachment;
+    }   
+
+
+    public async Task<IEnumerable<TaskItemDTO>> GetOverdueTasks(Guid userId)
+    {
+    var today = DateTime.UtcNow;
+
+    var overdueTasks = await _context.Tasks
+        .Where(t => t.UserId == userId 
+                    && t.DueDate < today 
+                    && (int)t.Status != 2)
+        .OrderBy(t => t.DueDate)
+        .ToListAsync();
+
+    return _mapper.Map<IEnumerable<TaskItemDTO>>(overdueTasks);
+    }
+
+
+    public async Task<TaskStatisticsDTO> GetTaskStatistics(Guid userId)
+    {
+    
+        var taskGroups = await _context.Tasks
+            .Where(t => t.UserId == userId)
+         .GroupBy(t => t.Status)
+         .Select(g => new { Status = g.Key, Count = g.Count() })
+          .ToListAsync();
+
+        var stats = new TaskStatisticsDTO
+    {
+        TotalTasks = taskGroups.Sum(g => g.Count),
+       
+          PendingTasks = taskGroups.FirstOrDefault(g => (int)g.Status == 0)?.Count ?? 0, 
+          InProgressTasks = taskGroups.FirstOrDefault(g => (int)g.Status == 1)?.Count ?? 0, 
+          CompletedTasks = taskGroups.FirstOrDefault(g => (int)g.Status == 2)?.Count ?? 0  
+    };
+
+    return stats;
 }
 
         

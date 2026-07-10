@@ -106,4 +106,24 @@ public class TaskController : ControllerBase
     return Ok(attachment);
     }
 
+    [HttpGet("statistics")]
+    public async Task<IActionResult> GetStatistics()
+    {
+        var userId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("sub")?.Value!);
+    
+        var stats = await _taskService.GetTaskStatistics(userId);
+
+        return Ok(stats);
+    }
+
+    [HttpGet("overdue")]
+    public async Task<IActionResult> GetOverdueTasks()
+    {
+        var userId = Guid.Parse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("sub")?.Value!);
+    
+        var tasks = await _taskService.GetOverdueTasks(userId);
+
+        return Ok(tasks);
+    }
+
 }

@@ -16,6 +16,9 @@ public interface ITaskService
 
     Task<TaskAttachment> UploadAttachmentAsync(UploadAttachmentDTO uploadDto);
 
+    Task<IEnumerable<TaskItemDTO>> GetOverdueTasks(Guid userId);
+    Task<TaskStatisticsDTO> GetTaskStatistics(Guid userId);
+
 
 
     
