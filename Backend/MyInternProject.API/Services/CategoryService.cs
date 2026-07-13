@@ -10,9 +10,9 @@ public class CategoryService : ICategoryService
 {
         private readonly ApplicationDbContext _context ;
         private readonly IMapper _mapper ;
-        private readonly ILogger _logger;
+        private readonly ILogger<CategoryService> _logger;
 
-        public CategoryService(ApplicationDbContext context, IMapper mapper, ILogger logger)
+        public CategoryService(ApplicationDbContext context, IMapper mapper, ILogger<CategoryService> logger)
     {
         _context = context;
         _mapper = mapper;

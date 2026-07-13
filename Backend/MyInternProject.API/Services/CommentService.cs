@@ -9,9 +9,9 @@ public class CommentService : ICommentService
 {
     private readonly ApplicationDbContext _context;
     private readonly IMapper _mapper;
-    private readonly ILogger _logger;
+    private readonly ILogger<CommentService> _logger;
 
-    public CommentService(ApplicationDbContext context, IMapper mapper, ILogger logger)
+    public CommentService(ApplicationDbContext context, IMapper mapper, ILogger<CommentService> logger)
     {
         _context = context;
         _mapper = mapper;
