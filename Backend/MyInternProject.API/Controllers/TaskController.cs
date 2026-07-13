@@ -80,7 +80,7 @@ public class TaskController : ControllerBase
 
 
     [HttpGet("search")] 
-    public async Task<IActionResult> GetSearch([FromQuery] TaskQueryDTO queryDto)
+    public async Task<IActionResult> GetSearch([FromQuery] TaskQueryDTO queryDto,CancellationToken cancellationToken)
     {
         
         var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value 
@@ -92,7 +92,7 @@ public class TaskController : ControllerBase
         }
 
         var userId = Guid.Parse(userIdClaim);
-        var tasks = await _taskService.GetFilteredTasksAsync(queryDto, userId);
+        var tasks = await _taskService.GetFilteredTasksAsync(queryDto, userId,cancellationToken);
         return Ok(tasks);
     }
 

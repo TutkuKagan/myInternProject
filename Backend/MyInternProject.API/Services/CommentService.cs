@@ -40,13 +40,13 @@ public class CommentService : ICommentService
         return _mapper.Map<CommentDTO>(commentEntity);
     }
 
-    public async Task<IEnumerable<CommentDTO>> GetCommentsByTaskId(Guid taskId)
+    public async Task<IEnumerable<CommentDTO>> GetCommentsByTaskId(Guid taskId,CancellationToken cancellationToken)
     {
 
         var comments = await _context.TaskComments
             .Where(c => c.TaskId == taskId)
             .OrderBy(c => c.CreatedAt)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return _mapper.Map<IEnumerable<CommentDTO>>(comments);
     }

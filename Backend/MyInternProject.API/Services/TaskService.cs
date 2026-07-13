@@ -99,7 +99,7 @@ public class TaskService : ITaskService
         return true;
     }
 
-    public async Task<IEnumerable<TaskItemDTO>> GetFilteredTasksAsync(TaskQueryDTO queryDto, Guid userId)
+    public async Task<IEnumerable<TaskItemDTO>> GetFilteredTasksAsync(TaskQueryDTO queryDto, Guid userId,CancellationToken cancellationToken)
     {
     
     var query = _context.Tasks
@@ -142,7 +142,7 @@ public class TaskService : ITaskService
     var tasks = await query
         .Skip((pageNumber - 1) * pageSize)
         .Take(pageSize)
-        .ToListAsync();
+        .ToListAsync(cancellationToken);
 
     return _mapper.Map<IEnumerable<TaskItemDTO>>(tasks);
     }

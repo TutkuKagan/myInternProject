@@ -37,9 +37,9 @@ public class CommentsController : ControllerBase
     }
 
     [HttpGet("task/{taskId}")]
-    public async Task<IActionResult> GetComments(Guid taskId)
+    public async Task<IActionResult> GetComments(Guid taskId,CancellationToken cancellationToken)
     {
-        var comments = await _commentService.GetCommentsByTaskId(taskId);
+        var comments = await _commentService.GetCommentsByTaskId(taskId,cancellationToken);
         return Ok(comments);
     }
 }
