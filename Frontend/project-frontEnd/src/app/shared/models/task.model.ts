@@ -7,4 +7,15 @@ export interface ITask {
   categoryId: number;
   categoryName?: string;
   userId: number;
+
+  comments?: IComment[];
+}
+
+export interface IComment {
+  id: number;
+  text: string;
+  createdDate: string;
+  taskId: number;
+  userId: number;
+  userName?: string;
 }
