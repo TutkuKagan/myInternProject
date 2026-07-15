@@ -1,5 +1,5 @@
- export interface IApiResponse {
-  data: TimeRanges;
+ export interface IApiResponse<T> {
+  data: T;
   isSuccess: boolean;
   message: string;
   errors?: string[];

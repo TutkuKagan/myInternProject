@@ -19,3 +19,11 @@ export interface IComment {
   userId: number;
   userName?: string;
 }
+
+export interface ITaskCreateDto {
+  title: string;
+  description?: string;
+  dueDate?: string;
+  categoryId: number;
+  userId: number;
+}

@@ -8,3 +8,9 @@
 
   tasks?: ITask[];
 }
+
+
+export interface ICategoryCreateDto {
+  name: string;
+  description?: string;
+}
