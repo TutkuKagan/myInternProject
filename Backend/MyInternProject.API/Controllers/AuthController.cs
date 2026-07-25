@@ -18,19 +18,25 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login (LoginDTO loginDto)
+    public async Task<IActionResult> Login([FromBody] LoginDTO loginDto)    
     {
-            var user = await _userService.Login(loginDto);
+    var user = await _userService.Login(loginDto);
 
-            var token = _jwtService.GenerateToken(user.Id, user.Username);
+    var expirationDateTime = DateTime.UtcNow.AddMinutes(60);
+    var token = _jwtService.GenerateToken(user.Id, user.Username);
 
-            return Ok(new 
-        { 
-            User = user, 
-            Token = token 
-        });
-
-    }
+    return Ok(new 
+    { 
+        isSuccess = true,
+        message = "Login Succesfull.",
+        data = new 
+        {
+            token = token,
+            expiration = expirationDateTime.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+            user = user
+        }
+    });
+}
 
     [HttpPost("register")]
     public async Task<IActionResult> Register(CreateUserDTO createUserDto)
