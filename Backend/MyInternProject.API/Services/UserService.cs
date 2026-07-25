@@ -30,7 +30,7 @@ public class UserService : IUserService
         }
 
             var userEntity = _mapper.Map<User>(createuserDto);
-            userEntity.PasswordHash = createuserDto.Password;
+            userEntity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(createuserDto.Password);
             _context.Users.Add(userEntity);
             await _context.SaveChangesAsync();
 
@@ -40,22 +40,19 @@ public class UserService : IUserService
         
     }
 
-    public async Task<UserDTO> Login (LoginDTO loginDto)
+    public async Task<UserDTO> Login(LoginDTO loginDto)
+{
+    var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == loginDto.Username);
+
+    if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
     {
-            //note to self: find can only find id's whereas firstorDefault finds the first one, or returns null(default)
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == loginDto.Username && u.PasswordHash == loginDto.Password);
-            
-            if(user == null)
-        {
-            _logger.LogWarning("Invalid login try. User: {Username}", loginDto.Username);
-            throw new Exception("Username or Password is wrong");
-        }
-
-
-             _logger.LogInformation("Succesfully logged in the User. User: {Username}", loginDto.Username);
-            return _mapper.Map<UserDTO>(user);
-        
+        _logger.LogWarning("Invalid login try. User: {Username}", loginDto.Username);
+        throw new Exception("Username or Password is wrong");
     }
+
+    _logger.LogInformation("Succesfully logged in the User. User: {Username}", loginDto.Username);
+    return _mapper.Map<UserDTO>(user);
+}
 
     public async  Task<bool> Delete (Guid id)
     {
