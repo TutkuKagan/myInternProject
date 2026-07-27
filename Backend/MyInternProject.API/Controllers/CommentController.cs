@@ -42,4 +42,27 @@ public class CommentsController : ControllerBase
         var comments = await _commentService.GetCommentsByTaskId(taskId,cancellationToken);
         return Ok(comments);
     }
+
+    [HttpDelete("{commentId}")]
+    public async Task<IActionResult> DeleteComment(Guid commentId)
+    {
+       var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value 
+                        ?? User.FindFirst("sub")?.Value;
+
+      if (string.IsNullOrEmpty(userIdClaim))
+      {
+          return Unauthorized("User identity not found.");
+      }
+
+      var userId = Guid.Parse(userIdClaim);
+
+      var result = await _commentService.DeleteComment(commentId, userId);
+    
+     if (!result)
+     {
+         return NotFound("Comment not found or you are not authorized to delete it.");
+     }
+
+        return NoContent(); // 204
+    }
 }

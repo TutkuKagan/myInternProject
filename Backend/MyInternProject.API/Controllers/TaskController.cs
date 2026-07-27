@@ -106,6 +106,26 @@ public class TaskController : ControllerBase
     return Ok(attachment);
     }
 
+    [HttpGet("attachments/{taskItemId}")]
+    public async Task<IActionResult> GetAttachments(Guid taskItemId)
+    {
+        var attachments = await _taskService.GetAttachmentsByTaskIdAsync(taskItemId);
+        return Ok(attachments);
+    }
+
+    [HttpDelete("attachments/{attachmentId}")]
+        public async Task<IActionResult> DeleteAttachment(Guid attachmentId)
+        {
+            var result = await _taskService.DeleteAttachmentAsync(attachmentId);
+    
+          if (!result)
+      {
+        return NotFound(new { message = "Attachment not found." });
+     }
+
+     return NoContent(); // 204 Successful
+    }
+
     [HttpGet("statistics")]
     public async Task<IActionResult> GetStatistics()
     {

@@ -1,0 +1,45 @@
+<div class="attachments-container">
+  <h3>📎 Attachments</h3>
+
+  <div 
+    class="upload-dropzone" 
+    [class.dragging]="isDragging"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave($event)"
+    (drop)="onDrop($event)">
+    
+    <input 
+      type="file" 
+      #fileInput 
+      (change)="onFileSelected($event)" 
+      style="display: none;" 
+    />
+
+    <div class="dropzone-content" (click)="fileInput.click()">
+      <div class="upload-icon">📤</div>
+      <p><strong>Click to upload</strong> or drag and drop files here</p>
+      <small>PNG, JPG, PDF, DOCX up to 10MB</small>
+    </div>
+
+    <div class="uploading-overlay" *ngIf="isUploading">
+      <span>Uploading file...</span>
+    </div>
+  </div>
+
+  <div class="attachments-list" *ngIf="attachments.length > 0">
+    <div class="attachment-item" *ngFor="let file of attachments">
+      <div class="file-info">
+        <span class="file-icon">📄</span>
+        <div class="file-details">
+          <a [href]="file.fileUrl" target="_blank" class="file-name">{{ file.fileName }}</a>
+          <span class="file-meta">{{ formatFileSize(file.fileSize) }} • {{ file.uploadedAt | date:'shortDate' }}</span>
+        </div>
+      </div>
+      <button class="delete-file-btn" (click)="deleteAttachment(file.id)" title="Delete File">✕</button>
+    </div>
+  </div>
+
+  <div class="empty-attachments" *ngIf="attachments.length === 0 && !isUploading">
+    No attachments uploaded yet.
+  </div>
+</div>

@@ -1,0 +1,52 @@
+<div class="comments-section">
+  <h3>💬 Comments ({{ comments.length }})</h3>
+
+  <div class="add-comment-card">
+    <textarea 
+      [(ngModel)]="newCommentText" 
+      placeholder="Write a comment..." 
+      rows="3"
+      [disabled]="isSubmitting">
+    </textarea>
+    <div class="card-footer">
+      <button 
+        class="btn-submit" 
+        (click)="submitComment()" 
+        [disabled]="!newCommentText.trim() || isSubmitting">
+        {{ isSubmitting ? 'Posting...' : 'Post Comment' }}
+      </button>
+    </div>
+  </div>
+
+  <div class="spinner" *ngIf="isLoading">Loading comments...</div>
+
+  <div class="comments-list" *ngIf="!isLoading && comments.length > 0">
+    <div class="comment-card" *ngFor="let comment of comments">
+      <div class="comment-header">
+        <div class="user-info">
+          <span class="avatar-badge">
+            {{ (comment.userName || 'U').charAt(0).toUpperCase() }}
+          </span>
+          <span class="user-name">{{ comment.userName || 'User' }}</span>
+          <span class="comment-date">{{ comment.createdAt | date:'short' }}</span>
+        </div>
+
+        <button 
+          *ngIf="!currentUserId || currentUserId === comment.userId" 
+          class="btn-delete" 
+          (click)="deleteComment(comment.id)" 
+          title="Delete comment">
+          ✕
+        </button>
+      </div>
+
+      <div class="comment-content">
+        <p>{{ comment.comment || comment.content }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-state" *ngIf="!isLoading && comments.length === 0">
+    <p>No comments yet. Be the first to comment!</p>
+  </div>
+</div>

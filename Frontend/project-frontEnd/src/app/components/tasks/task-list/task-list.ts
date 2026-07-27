@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { TaskCard } from '../task-card/task-card';
 import { TaskService } from '../../../core/services/TaskService';
 import { NotificationService } from '../../../core/services/NotificationService';
@@ -9,7 +10,7 @@ import { ITask } from '../../../shared/models/task.model';
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, TaskCard],
+  imports: [CommonModule, RouterModule, FormsModule, TaskCard],
   templateUrl: './task-list.html',
   styleUrl: './task-list.scss'
 })
@@ -18,9 +19,21 @@ export class TaskList implements OnInit {
   private notificationService = inject(NotificationService);
   private cdr = inject(ChangeDetectorRef);
 
-  tasks: ITask[] = [];
+  allTasks: ITask[] = [];
+  filteredTasks: ITask[] = [];
+  paginatedTasks: ITask[] = [];
+
   isLoading: boolean = false;
   errorMessage: string = '';
+
+  searchTerm: string = '';
+  statusFilter: string = 'ALL';
+  priorityFilter: string = 'ALL';
+  sortBy: string = 'createdAt_desc';
+
+  currentPage: number = 1;
+  pageSize: number = 3;
+  totalPages: number = 1;
 
   ngOnInit(): void {
     this.loadTasks();
@@ -31,21 +44,19 @@ export class TaskList implements OnInit {
 
     this.taskService.getTasks().subscribe({
       next: (res: any) => {
-        console.log('1. Search Raw Response:', res);
-
+        this.isLoading = false;
+        
         if (Array.isArray(res)) {
-          this.tasks = [...res];
+          this.allTasks = res;
         } else if (res && Array.isArray(res.data)) {
-          this.tasks = [...res.data];
+          this.allTasks = res.data;
         } else if (res && Array.isArray(res.items)) {
-          this.tasks = [...res.items];
+          this.allTasks = res.items;
         } else {
-          this.tasks = [];
+          this.allTasks = [];
         }
 
-        this.isLoading = false;
-        console.log('2. Atanan Tasks Dizisi:', this.tasks);
-
+        this.applyFilters();
         this.cdr.detectChanges();
       },
       error: (err) => {
@@ -56,20 +67,79 @@ export class TaskList implements OnInit {
     });
   }
 
+  applyFilters(): void {
+    let tempTasks = [...this.allTasks];
+
+    if (this.searchTerm.trim() !== '') {
+      const term = this.searchTerm.toLowerCase();
+      tempTasks = tempTasks.filter(task => 
+        task.title?.toLowerCase().includes(term) || 
+        task.description?.toLowerCase().includes(term)
+      );
+    }
+
+    if (this.statusFilter !== 'ALL') {
+      const statusNum = Number(this.statusFilter);
+      tempTasks = tempTasks.filter(task => task.status === statusNum);
+    }
+
+    if (this.priorityFilter !== 'ALL') {
+      const priorityNum = Number(this.priorityFilter);
+      tempTasks = tempTasks.filter(task => task.priority === priorityNum);
+    }
+
+    tempTasks.sort((a, b) => {
+      switch (this.sortBy) {
+        case 'dueDate_asc':
+          return new Date(a.dueDate || 0).getTime() - new Date(b.dueDate || 0).getTime();
+        case 'dueDate_desc':
+          return new Date(b.dueDate || 0).getTime() - new Date(a.dueDate || 0).getTime();
+        case 'priority_desc':
+          return b.priority - a.priority;
+        case 'priority_asc':
+          return a.priority - b.priority;
+        case 'title_asc':
+          return a.title.localeCompare(b.title);
+        case 'createdAt_desc':
+        default:
+          return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+      }
+    });
+
+    this.filteredTasks = tempTasks;
+    this.currentPage = 1;
+    this.updatePagination();
+  }
+
+  updatePagination(): void {
+    this.totalPages = Math.ceil(this.filteredTasks.length / this.pageSize) || 1;
+    
+    const startIndex = (this.currentPage - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    
+    // Ekrana sadece o sayfanın elemanlarını dilimleyip veriyoruz
+    this.paginatedTasks = this.filteredTasks.slice(startIndex, endIndex);
+  }
+
+  goToPage(page: number): void {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+    this.updatePagination();
+  }
+
+  get totalPagesArray(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
+  }
+
   async handleDeleteTask(taskId: string): Promise<void> {
     const confirmed = await this.notificationService.confirm('Are you sure you want to delete this task?');
-    
     if (!confirmed) return;
 
     this.taskService.deleteTask(String(taskId)).subscribe({
-      next: (response) => {
-        if (response.isSuccess) {
-          this.notificationService.showSuccess('Task deleted successfully.');
-          this.tasks = this.tasks.filter(t => t.id !== taskId);
-          this.cdr.detectChanges(); // 👈 Silme sonrası ekranı güncelle
-        } else {
-          this.notificationService.showError(response.message || 'Delete failed.');
-        }
+      next: () => {
+        this.notificationService.showSuccess('Task deleted successfully.');
+        this.allTasks = this.allTasks.filter(t => t.id !== taskId);
+        this.applyFilters();
       },
       error: () => {
         this.notificationService.showError('Could not delete task.');

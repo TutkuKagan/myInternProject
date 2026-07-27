@@ -1,0 +1,126 @@
+<div class="kanban-container">
+  <div class="kanban-header">
+    <h2>Task Board</h2>
+    <p>Drag and drop tasks between columns to update their status</p>
+  </div>
+
+  <div class="loading-spinner" *ngIf="isLoading">
+    Loading board...
+  </div>
+
+  <div class="kanban-board" *ngIf="!isLoading" cdkDropListGroup>
+    
+    <div class="kanban-column">
+      <div class="column-header pending">
+        <h3>Pending <span>({{ pendingTasks.length }})</span></h3>
+      </div>
+      <div 
+        class="task-list-box"
+        cdkDropList
+        [cdkDropListData]="pendingTasks"
+        (cdkDropListDropped)="onDrop($event, 0)">
+        
+        <div class="kanban-card" *ngFor="let task of pendingTasks" cdkDrag>
+          <div class="card-priority priority-{{ task.priority }}">
+            {{ getPriorityName(task.priority) }}
+          </div>
+          <h4>{{ task.title }}</h4>
+          <p>{{ task.description }}</p>
+          <div class="card-footer">
+            <small>📅 {{ task.dueDate | date:'shortDate' }}</small>
+            <a [routerLink]="['/tasks/edit', task.id]" class="edit-link">Edit</a>
+          </div>
+        </div>
+
+        <div class="empty-column" *ngIf="pendingTasks.length === 0">
+          No pending tasks
+        </div>
+      </div>
+    </div>
+
+    <div class="kanban-column">
+      <div class="column-header in-progress">
+        <h3>In Progress <span>({{ inProgressTasks.length }})</span></h3>
+      </div>
+      <div 
+        class="task-list-box"
+        cdkDropList
+        [cdkDropListData]="inProgressTasks"
+        (cdkDropListDropped)="onDrop($event, 1)">
+        
+        <div class="kanban-card" *ngFor="let task of inProgressTasks" cdkDrag>
+          <div class="card-priority priority-{{ task.priority }}">
+            {{ getPriorityName(task.priority) }}
+          </div>
+          <h4>{{ task.title }}</h4>
+          <p>{{ task.description }}</p>
+          <div class="card-footer">
+            <small>📅 {{ task.dueDate | date:'shortDate' }}</small>
+            <a [routerLink]="['/tasks/edit', task.id]" class="edit-link">Edit</a>
+          </div>
+        </div>
+
+        <div class="empty-column" *ngIf="inProgressTasks.length === 0">
+          No tasks in progress
+        </div>
+      </div>
+    </div>
+
+    <div class="kanban-column">
+      <div class="column-header completed">
+        <h3>Completed <span>({{ completedTasks.length }})</span></h3>
+      </div>
+      <div 
+        class="task-list-box"
+        cdkDropList
+        [cdkDropListData]="completedTasks"
+        (cdkDropListDropped)="onDrop($event, 2)">
+        
+        <div class="kanban-card" *ngFor="let task of completedTasks" cdkDrag>
+          <div class="card-priority priority-{{ task.priority }}">
+            {{ getPriorityName(task.priority) }}
+          </div>
+          <h4>{{ task.title }}</h4>
+          <p>{{ task.description }}</p>
+          <div class="card-footer">
+            <small>📅 {{ task.dueDate | date:'shortDate' }}</small>
+            <a [routerLink]="['/tasks/edit', task.id]" class="edit-link">Edit</a>
+          </div>
+        </div>
+
+        <div class="empty-column" *ngIf="completedTasks.length === 0">
+          No completed tasks
+        </div>
+      </div>
+    </div>
+
+    <div class="kanban-column">
+      <div class="column-header cancelled">
+        <h3>Cancelled <span>({{ cancelledTasks.length }})</span></h3>
+      </div>
+      <div 
+        class="task-list-box"
+        cdkDropList
+        [cdkDropListData]="cancelledTasks"
+        (cdkDropListDropped)="onDrop($event, 3)">
+        
+        <div class="kanban-card" *ngFor="let task of cancelledTasks" cdkDrag>
+          <div class="card-priority priority-{{ task.priority }}">
+            {{ getPriorityName(task.priority) }}
+          </div>
+          <h4>{{ task.title }}</h4>
+          <p>{{ task.description }}</p>
+          <div class="card-footer">
+            <small>📅 {{ task.dueDate | date:'shortDate' }}</small>
+            <a [routerLink]="['/tasks/edit', task.id]" class="edit-link">Edit</a>
+          </div>
+        </div>
+
+        <div class="empty-column" *ngIf="cancelledTasks.length === 0">
+          No cancelled tasks
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

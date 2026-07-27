@@ -7,6 +7,52 @@
     <a routerLink="/tasks/new" class="btn btn-primary">+ Create Task</a>
   </div>
 
+  <div class="filter-bar">
+    <div class="search-box">
+      <input 
+        type="text" 
+        placeholder="🔍 Search tasks..." 
+        [(ngModel)]="searchTerm" 
+        (ngModelChange)="applyFilters()"
+      />
+    </div>
+
+    <div class="filter-group">
+      <label>Status:</label>
+      <select [(ngModel)]="statusFilter" (change)="applyFilters()">
+        <option value="ALL">All Statuses</option>
+        <option value="0">Pending</option>
+        <option value="1">In Progress</option>
+        <option value="2">Completed</option>
+        <option value="3">Cancelled</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>Priority:</label>
+      <select [(ngModel)]="priorityFilter" (change)="applyFilters()">
+        <option value="ALL">All Priorities</option>
+        <option value="1">Low</option>
+        <option value="2">Normal</option>
+        <option value="3">High</option>
+        <option value="4">Urgent</option>
+        <option value="5">Critical</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>Sort By:</label>
+      <select [(ngModel)]="sortBy" (change)="applyFilters()">
+        <option value="createdAt_desc">Newest First</option>
+        <option value="dueDate_asc">Due Date (Earliest)</option>
+        <option value="dueDate_desc">Due Date (Latest)</option>
+        <option value="priority_desc">Priority (High to Low)</option>
+        <option value="priority_asc">Priority (Low to High)</option>
+        <option value="title_asc">Title (A-Z)</option>
+      </select>
+    </div>
+  </div>
+
   <div class="loading-spinner" *ngIf="isLoading">
     Loading tasks...
   </div>
@@ -15,15 +61,41 @@
     {{ errorMessage }}
   </div>
 
-  <div class="empty-state" *ngIf="!isLoading && tasks.length === 0">
-    <p>no tasks found. Click "Create Task" to add your task</p>
+  <div class="empty-state" *ngIf="!isLoading && paginatedTasks.length === 0">
+    <p>No tasks found matching your criteria.</p>
   </div>
 
-  <div class="tasks-grid" *ngIf="!isLoading && tasks.length > 0">
+  <div class="tasks-grid" *ngIf="!isLoading && paginatedTasks.length > 0">
     <app-task-card 
-      *ngFor="let taskItem of tasks" 
+      *ngFor="let taskItem of paginatedTasks" 
       [task]="taskItem"
       (deleteRequested)="handleDeleteTask($event)">
     </app-task-card>
+  </div>
+
+  <div class="pagination-container" *ngIf="!isLoading && totalPages > 1">
+    <button 
+      class="pagination-btn" 
+      [disabled]="currentPage === 1" 
+      (click)="goToPage(currentPage - 1)">
+      &laquo; Previous
+    </button>
+
+    <div class="page-numbers">
+      <button 
+        *ngFor="let page of totalPagesArray" 
+        class="page-num-btn" 
+        [class.active]="page === currentPage" 
+        (click)="goToPage(page)">
+        {{ page }}
+      </button>
+    </div>
+
+    <button 
+      class="pagination-btn" 
+      [disabled]="currentPage === totalPages" 
+      (click)="goToPage(currentPage + 1)">
+      Next &raquo;
+    </button>
   </div>
 </div>

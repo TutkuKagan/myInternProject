@@ -3,8 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../enviroments/environment.development';
 import { IApiResponse } from '../../shared/models/api-response.model';
-import { ITask, ITaskCreateDto } from '../../shared/models/task.model';
 import { HttpHeaders } from '@angular/common/http';
+import { ITask, ITaskCreateDto, ITaskAttachment } from '../../shared/models/task.model';
+import { ITaskComment, ICreateComment } from '../../shared/models/task.model';
+
 
 @Injectable({
   providedIn: 'root'
@@ -39,4 +41,33 @@ export class TaskService {
   getStatistics(): Observable<IApiResponse<any>> {
     return this.http.get<IApiResponse<any>>(`${this.apiUrl}/statistics`);
   }
+
+
+uploadAttachment(taskId: string, file: File) {
+  const formData = new FormData();
+  formData.append('TaskItemId', taskId);
+  formData.append('File', file);
+
+  return this.http.post<ITaskAttachment>(`${this.apiUrl}/upload-attachment`, formData);
+}
+
+getAttachments(taskId: string) {
+  return this.http.get<ITaskAttachment[]>(`${this.apiUrl}/attachments/${taskId}`);
+}
+
+deleteAttachment(taskId: string, attachmentId: string) {
+  return this.http.delete(`${this.apiUrl}/attachments/${attachmentId}`);
+}
+
+getCommentsByTaskId(taskId: string): Observable<ITaskComment[]> {
+  return this.http.get<ITaskComment[]>(`http://localhost:5020/api/comments/task/${taskId}`);
+}
+
+  addComment(dto: ICreateComment): Observable<ITaskComment> {
+  return this.http.post<ITaskComment>('http://localhost:5020/api/comments/add', dto);
+}
+
+  deleteComment(commentId: string): Observable<void> {
+  return this.http.delete<void>(`http://localhost:5020/api/comments/${commentId}`);
+}
 }

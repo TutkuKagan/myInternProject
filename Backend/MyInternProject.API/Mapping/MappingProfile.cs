@@ -11,7 +11,11 @@ public class MappingProfile:Profile
         {
             //outputs
             CreateMap<User, UserDTO>();
-            CreateMap<TaskItem, TaskItemDTO>();
+
+            CreateMap<TaskItem, TaskItemDTO>()
+                .ForMember(dest => dest.AttachmentCount, opt => opt.MapFrom(src => src.TaskAttachments != null ? src.TaskAttachments.Count : 0))
+                .ForMember(dest => dest.CommentCount, opt => opt.MapFrom(src => src.TaskComments != null ? src.TaskComments.Count : 0));
+
             CreateMap<Category,CategoryDTO>();
 
             //inputs

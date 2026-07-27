@@ -1,2 +1,27 @@
-<app-navigation></app-navigation>
-<router-outlet></router-outlet>
+<header class="app-header">
+  <nav class="app-navbar">
+    <div class="nav-left">
+      <a routerLink="/tasks" class="brand-logo">
+        <span class="logo-icon">📋</span> TaskManager
+      </a>
+      <div class="nav-links">
+        <a routerLink="/tasks" routerLinkActive="active" class="nav-item">Tasks</a>
+        <a routerLink="/kanban" routerLinkActive="active" class="nav-item">Kanban</a>
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <button class="theme-toggle-btn" (click)="toggleTheme()" title="Toggle Theme">
+        {{ isDarkMode ? '☀️ Light' : '🌙 Dark' }}
+      </button>
+
+      <button class="logout-btn" (click)="onLogout()" title="Logout">
+        🚪 Logout
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>

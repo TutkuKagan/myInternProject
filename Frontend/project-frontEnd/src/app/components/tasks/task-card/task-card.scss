@@ -1,69 +1,226 @@
 .task-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
   border-radius: 12px;
-  padding: 20px;
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  transition: transform 0.2s, box-shadow 0.2s;
+  gap: 0.85rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  &.priority-border-1 { border-left: 5px solid #64748b; }
+  &.priority-border-2 { border-left: 5px solid #3b82f6; }
+  &.priority-border-3 { border-left: 5px solid #f59e0b; }
+  &.priority-border-4 { border-left: 5px solid #ef4444; }
+  &.priority-border-5 { border-left: 5px solid #9333ea; }
+
+  .card-header-badges {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .category-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      background-color: rgba(59, 130, 246, 0.1);
+      color: #2563eb;
+    }
+
+    .priority-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.25rem 0.6rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+
+      &.priority-1 { background-color: #f1f5f9; color: #475569; }
+      &.priority-2 { background-color: #dbeafe; color: #1e40af; }
+      &.priority-3 { background-color: #fef3c7; color: #92400e; }
+      &.priority-4 { background-color: #fee2e2; color: #991b1b; }
+      &.priority-5 { background-color: #f3e8ff; color: #6b21a8; }
+    }
+  }
+
+  .task-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-primary);
+  }
+
+  .task-description {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .progress-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .progress-bar-bg {
+      height: 6px;
+      width: 100%;
+      background-color: var(--border-color);
+      border-radius: 3px;
+      overflow: hidden;
+
+      .progress-bar-fill {
+        height: 100%;
+        transition: width 0.3s ease;
+
+        &.status-0 { background-color: #f59e0b; }
+        &.status-1 { background-color: #3b82f6; }
+        &.status-2 { background-color: #10b981; }
+      }
+    }
+  }
+
+  .task-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.25rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-color);
+
+    .due-date-badge {
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
+      background-color: var(--border-color);
+      color: var(--text-secondary);
+
+      &.due-soon {
+        background-color: #fef3c7;
+        color: #b45309;
+      }
+
+      &.overdue {
+        background-color: #fee2e2;
+        color: #b91c1c;
+      }
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 0.5rem;
+
+      .action-btn {
+        padding: 0.35rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        border: none;
+        transition: opacity 0.2s;
+
+        &:hover { opacity: 0.85; }
+      }
+
+      .edit-btn {
+        background-color: #e2e8f0;
+        color: #334155;
+      }
+
+      .delete-btn {
+        background-color: #fee2e2;
+        color: #991b1b;
+      }
+    }
   }
 }
 
-.task-header {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
+
+body.dark-theme {
+  .task-card {
+    .card-header-badges {
+      .category-badge {
+        background-color: rgba(59, 130, 246, 0.2);
+        color: #60a5fa;
+      }
+
+      .priority-badge {
+        &.priority-1 { background-color: #1e293b; color: #94a3b8; }
+        &.priority-2 { background-color: #1e3a8a; color: #93c5fd; }
+        &.priority-3 { background-color: #78350f; color: #fcd34d; }
+        &.priority-4 { background-color: #7f1d1d; color: #fca5a5; }
+        &.priority-5 { background-color: #581c87; color: #e9d5ff; }
+      }
+    }
+
+    .task-footer {
+      .due-date-badge {
+        &.due-soon {
+          background-color: #78350f;
+          color: #fcd34d;
+        }
+
+        &.overdue {
+          background-color: #7f1d1d;
+          color: #fca5a5;
+        }
+      }
+
+      .card-actions {
+        .edit-btn {
+          background-color: #334155;
+          color: #f8fafc;
+        }
+
+        .delete-btn {
+          background-color: #7f1d1d;
+          color: #fca5a5;
+        }
+      }
+    }
+  }
 }
 
-.status-badge, .priority-badge {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 4px 8px;
-  border-radius: 6px;
-  text-transform: uppercase;
-}
-
-.status-badge {
-  background-color: #f1f5f9; color: #475569;
-  &.completed { background-color: #d1fae5; color: #065f46; }
-  &.inprogress { background-color: #dbeafe; color: #1e40af; }
-}
-
-.priority-badge {
-  &.high { background-color: #fee2e2; color: #991b1b; }
-  &.normal { background-color: #fef3c7; color: #92400e; }
-  &.low { background-color: #f3f4f6; color: #374151; }
-}
-
-.task-title { font-size: 18px; color: #0f172a; margin: 0 0 8px 0; }
-.task-description { color: #64748b; font-size: 14px; margin-bottom: 20px; flex-grow: 1; }
-
-.task-footer {
-  display: flex;
-  justify-content: space-between;
+.attachment-badge {
+  display: inline-flex;
   align-items: center;
-  padding-top: 12px;
-  border-top: 1px solid #f1f5f9;
-}
-
-.due-date { font-size: 12px; color: #94a3b8; font-weight: 500; }
-.card-actions { display: flex; gap: 8px; }
-
-.action-btn {
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 13px;
+  gap: 4px;
+  font-size: 0.75rem;
   font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-  border: none;
-  transition: background-color 0.2s;
+  color: #475569;
+  background-color: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  padding: 2px 8px;
+  border-radius: 12px;
+  line-height: 1;
+
+  &:hover {
+    background-color: #e2e8f0;
+  }
 }
 
-.edit-btn { background-color: #eff6ff; color: #2563eb; }
-.delete-btn { background-color: #fef2f2; color: #dc2626; }
+body.dark-theme {
+  .attachment-badge {
+    color: #cbd5e1;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+}

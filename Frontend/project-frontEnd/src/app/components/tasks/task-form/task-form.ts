@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 import { TaskService } from '../../../core/services/TaskService';
+import { TaskAttachments } from '../task-attachments/task-attachments';
+import { TaskCommentsComponent } from '../../task-comments/task-comments';
 
 @Component({
   selector: 'app-task-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, TaskAttachments, TaskCommentsComponent],
   templateUrl: './task-form.html',
   styleUrl: './task-form.scss'
 })
@@ -30,7 +32,7 @@ export class TaskForm implements OnInit {
   this.taskForm = this.fb.group({
     title: ['', [Validators.required]],
     description: ['', [Validators.required]],
-    priority: [1, [Validators.required]],
+    priority: [2, [Validators.required]],
     status: [0, [Validators.required]],
     dueDate: [today, [Validators.required]]
   });

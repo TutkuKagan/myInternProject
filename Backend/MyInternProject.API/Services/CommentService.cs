@@ -20,34 +20,69 @@ public class CommentService : ICommentService
 
     public async Task<CommentDTO> AddComment(CreateCommentDTO createCommentDto, Guid userId)
     {
-        _logger.LogInformation("Adding a Comment. User: {id}", userId);
-        var taskExists = await _context.Tasks.AnyAsync(t => t.Id == createCommentDto.TaskId);
-        if (!taskExists)
-        {
-            throw new Exception("Task not found.");
-        }
+    var commentEntity = new TaskComment
+    {
+        Id = Guid.NewGuid(),
+        TaskId = createCommentDto.TaskId,
+        Comment = createCommentDto.Comment,
+        UserId = userId,
+        CreatedAt = DateTime.UtcNow
+    };
 
-        var commentEntity = _mapper.Map<TaskComment>(createCommentDto);
-        
-        commentEntity.UserId = userId;
-        commentEntity.CreatedAt = DateTime.UtcNow;
+    _context.TaskComments.Add(commentEntity);
+    await _context.SaveChangesAsync();
 
-        _context.TaskComments.Add(commentEntity);
-        await _context.SaveChangesAsync();
+    await _context.Entry(commentEntity).Reference(c => c.User).LoadAsync();
 
-
-        _logger.LogInformation("Added the Comment. Comment's TaskID: {Taskid}", createCommentDto.TaskId);
-        return _mapper.Map<CommentDTO>(commentEntity);
+    return new CommentDTO
+    {
+        Id = commentEntity.Id,
+        TaskId = commentEntity.TaskId,
+        UserId = commentEntity.UserId,
+        UserName = commentEntity.User?.Username ?? commentEntity.User?.Email ?? "User",
+        Comment = commentEntity.Comment,
+        CreatedAt = commentEntity.CreatedAt
+     };
     }
 
-    public async Task<IEnumerable<CommentDTO>> GetCommentsByTaskId(Guid taskId,CancellationToken cancellationToken)
+    public async Task<IEnumerable<CommentDTO>> GetCommentsByTaskId(Guid taskId, CancellationToken cancellationToken = default)
     {
+    return await _context.TaskComments
+        .Include(c => c.User)
+        .Where(c => c.TaskId == taskId)
+        .OrderByDescending(c => c.CreatedAt)
+        .Select(c => new CommentDTO
+        {
+            Id = c.Id,
+            TaskId = c.TaskId,
+            UserId = c.UserId,
+            UserName = c.User != null ? c.User.Username : "User",
+            Comment = c.Comment,
+            CreatedAt = c.CreatedAt
+        })
+        .ToListAsync(cancellationToken);
+    }
 
-        var comments = await _context.TaskComments
-            .Where(c => c.TaskId == taskId)
-            .OrderBy(c => c.CreatedAt)
-            .ToListAsync(cancellationToken);
+    public async Task<bool> DeleteComment(Guid commentId, Guid userId)
+    {
+        _logger.LogWarning("Deleting comment. CommentId: {CommentId}, UserId: {UserId}", commentId, userId);
 
-        return _mapper.Map<IEnumerable<CommentDTO>>(comments);
+        var comment = await _context.TaskComments.FindAsync(commentId);
+        if (comment == null)
+        {
+            return false;
+        }
+
+        if (comment.UserId != userId)
+        {
+            _logger.LogWarning("Unauthorized comment deletion attempt. CommentId: {CommentId}, UserId: {UserId}", commentId, userId);
+            return false;
+        }
+
+        _context.TaskComments.Remove(comment);
+        await _context.SaveChangesAsync();
+
+        _logger.LogInformation("Comment deleted successfully. CommentId: {CommentId}", commentId);
+        return true;
     }
 }

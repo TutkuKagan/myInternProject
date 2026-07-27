@@ -1,0 +1,141 @@
+.app-header {
+  background-color: var(--bg-card, #ffffff);
+  border-bottom: 1px solid var(--border-color, #e2e8f0);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.app-navbar {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .nav-left {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+
+    .brand-logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary, #0f172a);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      .logo-icon {
+        font-size: 1.3rem;
+      }
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .nav-item {
+        text-decoration: none;
+        color: var(--text-muted, #64748b);
+        font-weight: 500;
+        font-size: 0.95rem;
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+
+        &:hover {
+          color: #0d6efd;
+          background-color: rgba(13, 110, 253, 0.05);
+        }
+
+        &.active {
+          color: #0d6efd;
+          font-weight: 600;
+          background-color: rgba(13, 110, 253, 0.1);
+        }
+      }
+    }
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+
+    .theme-toggle-btn {
+      background: transparent;
+      border: 1px solid var(--border-color, #cbd5e1);
+      color: var(--text-primary, #334155);
+      padding: 0.45rem 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.85rem;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.04);
+      }
+    }
+
+    .logout-btn {
+      background-color: #fef2f2;
+      border: 1px solid #fee2e2;
+      color: #991b1b;
+      padding: 0.45rem 0.85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: #fee2e2;
+      }
+    }
+  }
+}
+
+.main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+body.dark-theme {
+  .app-header {
+    background-color: #0f172a;
+    border-color: #1e293b;
+  }
+
+  .app-navbar {
+    .nav-left {
+      .brand-logo { color: #f8fafc; }
+      .nav-links .nav-item {
+        color: #94a3b8;
+        &:hover { color: #60a5fa; background-color: rgba(96, 165, 250, 0.1); }
+        &.active { color: #60a5fa; background-color: rgba(96, 165, 250, 0.15); }
+      }
+    }
+
+    .nav-right {
+      .theme-toggle-btn {
+        border-color: #334155;
+        color: #f8fafc;
+        &:hover { background-color: rgba(255, 255, 255, 0.05); }
+      }
+
+      .logout-btn {
+        background-color: rgba(239, 68, 68, 0.15);
+        border-color: rgba(239, 68, 68, 0.3);
+        color: #fca5a5;
+        &:hover { background-color: rgba(239, 68, 68, 0.25); }
+      }
+    }
+  }
+}

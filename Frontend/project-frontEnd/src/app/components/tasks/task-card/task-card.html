@@ -1,21 +1,54 @@
-<div class="task-card" *ngIf="task">
-  <div class="task-header">
-    <span class="status-badge">
-      {{ task.status === 0 ? 'Todo' : task.status === 1 ? 'In Progress' : 'Done' }}
+<div class="task-card priority-border-{{ task.priority }}" *ngIf="task">
+  
+  <div class="card-header-badges">
+    <span class="category-badge" *ngIf="task.category">
+      📁 {{ task.category }}
     </span>
-    <span class="priority-badge">
-      {{ task.priority === 0 ? 'Low' : task.priority === 1 ? 'Medium' : 'High' }}
+    <span class="priority-badge priority-{{ task.priority }}">
+      {{ getPriorityLabel(task.priority) }}
     </span>
   </div>
 
   <h3 class="task-title">{{ task.title }}</h3>
   <p class="task-description">{{ task.description }}</p>
 
+  <div class="progress-container">
+    <div class="progress-info">
+      <span>Progress</span>
+      <span>{{ progressPercentage }}%</span>
+    </div>
+    <div class="progress-bar-bg">
+      <div 
+        class="progress-bar-fill status-{{ task.status }}" 
+        [style.width.%]="progressPercentage">
+      </div>
+    </div>
+  </div>
+
+  <div class="card-badges">
+    <span *ngIf="task.attachmentCount && task.attachmentCount > 0" 
+          class="attachment-badge" 
+          [title]="task.attachmentCount + ' attachment(s)'">
+      📎 {{ task.attachmentCount }}
+    </span>
+
+    <span class="attachment-badge" *ngIf="task.commentCount && task.commentCount > 0" title="Comments">
+      💬 {{ task.commentCount }}
+    </span>
+  </div>
+
   <div class="task-footer">
-    <span class="due-date">📅 {{ task.dueDate | date:'mediumDate' }}</span>
+    <div class="due-date-badge" [ngClass]="dueDateStatus">
+      <span *ngIf="dueDateStatus === 'overdue'"> Overdue: </span>
+      <span *ngIf="dueDateStatus === 'due-soon'">⚠️ Due Soon: </span>
+      <span *ngIf="dueDateStatus === 'normal'"> Due: </span>
+      {{ task.dueDate | date:'mediumDate' }}
+    </div>
+
     <div class="card-actions">
       <a [routerLink]="['/tasks/edit', task.id]" class="action-btn edit-btn">Edit</a>
       <button (click)="onDelete()" class="action-btn delete-btn">Delete</button>
     </div>
   </div>
+
 </div>

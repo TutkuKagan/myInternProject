@@ -10,7 +10,7 @@ public class TaskAttachment
 
     public string FileName {get; set;} = string.Empty;
     public string FilePath {get; set;} = string.Empty;
-    public BigInteger FileSize {get; set;} 
+    public long FileSize {get; set;} 
     public string ContentType {get; set;} = string.Empty;
     public DateTime UploadedAt {get; set;} = DateTime.UtcNow;
 

@@ -15,9 +15,12 @@ public interface ITaskService
     Task<bool> Delete (Guid id);
 
     Task<TaskAttachment> UploadAttachmentAsync(UploadAttachmentDTO uploadDto);
+    Task<List<TaskAttachment>> GetAttachmentsByTaskIdAsync(Guid taskItemId);
 
     Task<IEnumerable<TaskItemDTO>> GetOverdueTasks(Guid userId);
     Task<TaskStatisticsDTO> GetTaskStatistics(Guid userId);
+
+    Task<bool> DeleteAttachmentAsync(Guid attachmentId);
 
 
 

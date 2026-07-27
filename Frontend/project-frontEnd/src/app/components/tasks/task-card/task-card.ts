@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { ITask } from '../../../shared/models/task.model';
 
 @Component({
   selector: 'app-task-card',
@@ -10,38 +11,44 @@ import { RouterModule } from '@angular/router';
   styleUrl: './task-card.scss'
 })
 export class TaskCard {
-  @Input() task: any;
+  @Input() task!: any;
   @Output() deleteRequested = new EventEmitter<string>();
 
   onDelete(): void {
     if (this.task?.id) {
-      this.deleteRequested.emit(this.task.id);
+      this.deleteRequested.emit(String(this.task.id));
     }
   }
 
-  getStatusLabel(status: number | string): string {
-    switch (Number(status)) {
-      case 0: return 'Todo';
-      case 1: return 'In Progress';
-      case 2: return 'Done';
-      default: return 'Pending';
-    }
+  get dueDateStatus(): 'overdue' | 'due-soon' | 'normal' {
+    if (!this.task?.dueDate || Number(this.task.status) === 2) return 'normal';
+
+    const now = new Date().getTime();
+    const due = new Date(this.task.dueDate).getTime();
+    const diffHours = (due - now) / (1000 * 60 * 60);
+
+    if (diffHours < 0) return 'overdue';
+    if (diffHours <= 24) return 'due-soon';
+    return 'normal';
   }
 
-  getStatusClass(status: number | string): string {
-    return this.getStatusLabel(status).toLowerCase().replace(' ', '-');
+  get progressPercentage(): number {
+    switch (Number(this.task?.status)) {
+      case 0: return 15;
+      case 1: return 50;
+      case 2: return 100;
+      default: return 0;
+    }
   }
 
   getPriorityLabel(priority: number | string): string {
     switch (Number(priority)) {
-      case 0: return 'Low';
-      case 1: return 'Medium';
-      case 2: return 'High';
+      case 1: return 'Low';
+      case 2: return 'Normal';
+      case 3: return 'High';
+      case 4: return 'Urgent';
+      case 5: return 'Critical';
       default: return 'Normal';
     }
-  }
-
-  getPriorityClass(priority: number | string): string {
-    return this.getPriorityLabel(priority).toLowerCase();
   }
 }

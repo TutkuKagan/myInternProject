@@ -61,6 +61,14 @@ public class TaskService : ITaskService
         return _mapper.Map<TaskItemDTO>(UpdatedTask);
     }
 
+    public async Task<List<TaskAttachment>> GetAttachmentsByTaskIdAsync(Guid taskItemId)
+{
+
+    return await _context.TaskAttachments
+        .Where(a => a.TaskId == taskItemId)
+        .ToListAsync();
+}
+
     public async Task<IEnumerable<TaskItemDTO>> FilterListTask (TaskFilterDTO taskFilterDto)
     {
         var filteredTasks = await _context.Tasks.ToListAsync();
@@ -103,6 +111,8 @@ public class TaskService : ITaskService
     {
     
     var query = _context.Tasks
+        .Include(t => t.TaskAttachments)
+        .Include(t => t.TaskComments)
         .Where(t => t.UserId == userId)
         .AsQueryable();
 
@@ -196,6 +206,31 @@ public class TaskService : ITaskService
 
     return attachment;
     }   
+
+    public async Task<bool> DeleteAttachmentAsync(Guid attachmentId)
+    {
+    var attachment = await _context.TaskAttachments.FindAsync(attachmentId);
+    
+    if (attachment == null) 
+        return false;
+
+    if (!string.IsNullOrEmpty(attachment.FilePath) && File.Exists(attachment.FilePath))
+    {
+        try
+        {
+            File.Delete(attachment.FilePath);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Fiziksel dosya silinemedi: {ex.Message}");
+        }
+    }
+
+    _context.TaskAttachments.Remove(attachment);
+    await _context.SaveChangesAsync();
+
+    return true;
+    }
 
 
     public async Task<IEnumerable<TaskItemDTO>> GetOverdueTasks(Guid userId)

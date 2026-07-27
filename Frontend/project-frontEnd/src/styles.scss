@@ -119,3 +119,162 @@ body {
   from { transform: translateX(100%); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
 }
+
+body.dark-theme {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+
+  .app-navbar, 
+  .task-card, 
+  .filter-bar, 
+  .stat-card, 
+  .kanban-card {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+  }
+
+  h1, h2, h3, h4, label, .brand-logo, .stat-value {
+    color: #f8fafc !important;
+  }
+
+  p, span, small, .stat-label {
+    color: #94a3b8 !important;
+  }
+
+  input, select {
+    background-color: #0f172a !important;
+    color: #f8fafc !important;
+    border-color: #334155 !important;
+  }
+
+  .kanban-column {
+    background-color: #182234 !important;
+    border-color: #334155 !important;
+  }
+
+  .nav-item {
+    color: #94a3b8 !important;
+
+    &:hover {
+      background-color: #334155 !important;
+      color: #ffffff !important;
+    }
+
+    &.active {
+      background-color: #2563eb !important;
+      color: #ffffff !important;
+    }
+  }
+
+  .theme-toggle-btn {
+    background-color: #334155 !important;
+    color: #f8fafc !important;
+    border-color: #475569 !important;
+  }
+}
+
+.theme-toggle-btn {
+  padding: 0.5rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background-color: #f8fafc;
+  color: #334155;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 0.5rem;
+
+  &:hover {
+    background-color: #e2e8f0;
+  }
+}
+
+/* ===================================================
+   🎨 TEMA DEĞİŞKENLERİ (LIGHT & DARK MODE)
+   =================================================== */
+
+:root {
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-input: #ffffff;
+  --border-color: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --column-bg: #f1f5f9;
+}
+
+body.dark-theme {
+  --bg-main: #0b0f17;
+  --bg-card: #151d2a;
+  --bg-input: #0f172a;
+  --border-color: #273549;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --column-bg: #111827;
+}
+
+html, body {
+  background-color: var(--bg-main) !important;
+  color: var(--text-primary) !important;
+  min-height: 100vh;
+  margin: 0;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+body.dark-theme {
+  h1, h2, h3, h4, h5, h6, strong, b {
+    color: var(--text-primary) !important;
+  }
+
+  p, span, label, small {
+    color: var(--text-secondary);
+  }
+}
+
+// dark theme color fix
+body.dark-theme {
+  .category-badge {
+    background-color: rgba(59, 130, 246, 0.2) !important;
+    color: #60a5fa !important;
+  }
+
+  .priority-badge,
+  .card-priority {
+    &.priority-1 { background-color: #1e293b !important; color: #94a3b8 !important; }
+    &.priority-2 { background-color: #1e3a8a !important; color: #93c5fd !important; }
+    &.priority-3 { background-color: #78350f !important; color: #fcd34d !important; }
+    &.priority-4 { background-color: #7f1d1d !important; color: #fca5a5 !important; }
+    &.priority-5 { background-color: #581c87 !important; color: #e9d5ff !important; }
+  }
+
+  .due-date-badge {
+    background-color: #1e293b !important;
+    color: #94a3b8 !important;
+
+    &.due-soon {
+      background-color: #78350f !important;
+      color: #fcd34d !important;
+    }
+
+    &.overdue {
+      background-color: #7f1d1d !important;
+      color: #fca5a5 !important;
+    }
+  }
+
+  .card-actions {
+    .edit-btn {
+      background-color: #334155 !important;
+      color: #f8fafc !important;
+    }
+
+    .delete-btn {
+      background-color: #7f1d1d !important;
+      color: #fca5a5 !important;
+    }
+  }
+}
