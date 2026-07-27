@@ -87,7 +87,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:3000", "http://localhost:5173")
+        policy.WithOrigins("http://localhost:3000", "http://localhost:5173", "http://localhost:4200")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -118,6 +118,7 @@ app.UseAuthentication();
 app.UseMiddleware<MyInternProject.API.ExceptionHandlers.ExceptionHandler>();
 app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
+app.UseCors("AllowAngular");
 app.UseAuthorization();
 app.UseStaticFiles();
 

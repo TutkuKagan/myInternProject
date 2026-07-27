@@ -1,1 +1,29 @@
-<p>task-list works!</p>
+<div class="task-list-container">
+  <div class="list-header">
+    <div>
+      <h1>My Tasks</h1>
+      <p>Manage and organize your current workload</p>
+    </div>
+    <a routerLink="/tasks/new" class="btn btn-primary">+ Create Task</a>
+  </div>
+
+  <div class="loading-spinner" *ngIf="isLoading">
+    Loading tasks...
+  </div>
+
+  <div class="alert alert-danger" *ngIf="errorMessage">
+    {{ errorMessage }}
+  </div>
+
+  <div class="empty-state" *ngIf="!isLoading && tasks.length === 0">
+    <p>no tasks found. Click "Create Task" to add your task</p>
+  </div>
+
+  <div class="tasks-grid" *ngIf="!isLoading && tasks.length > 0">
+    <app-task-card 
+      *ngFor="let taskItem of tasks" 
+      [task]="taskItem"
+      (deleteRequested)="handleDeleteTask($event)">
+    </app-task-card>
+  </div>
+</div>

@@ -1,1 +1,21 @@
-<p>task-card works!</p>
+<div class="task-card" *ngIf="task">
+  <div class="task-header">
+    <span class="status-badge">
+      {{ task.status === 0 ? 'Todo' : task.status === 1 ? 'In Progress' : 'Done' }}
+    </span>
+    <span class="priority-badge">
+      {{ task.priority === 0 ? 'Low' : task.priority === 1 ? 'Medium' : 'High' }}
+    </span>
+  </div>
+
+  <h3 class="task-title">{{ task.title }}</h3>
+  <p class="task-description">{{ task.description }}</p>
+
+  <div class="task-footer">
+    <span class="due-date">📅 {{ task.dueDate | date:'mediumDate' }}</span>
+    <div class="card-actions">
+      <a [routerLink]="['/tasks/edit', task.id]" class="action-btn edit-btn">Edit</a>
+      <button (click)="onDelete()" class="action-btn delete-btn">Delete</button>
+    </div>
+  </div>
+</div>

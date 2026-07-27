@@ -1,1 +1,29 @@
-<p>navigation works!</p>
+<nav class="navbar" *ngIf="currentUser$ | async as user">
+  <div class="nav-container">
+
+    <a routerLink="/dashboard" class="nav-logo">
+      TaskManager
+    </a>
+
+    <ul class="nav-menu">
+      <li class="nav-item">
+        <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
+          Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a routerLink="/tasks" routerLinkActive="active" class="nav-link">
+          Tasks
+        </a>
+      </li>
+    </ul>
+
+    <div class="nav-user">
+      <span class="user-name">{{ user.fullName || user.username }}</span>
+      <button (click)="onLogout()" class="logout-btn">
+        Logout
+      </button>
+    </div>
+
+  </div>
+</nav>
