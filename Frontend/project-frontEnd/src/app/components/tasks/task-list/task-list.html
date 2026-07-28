@@ -67,10 +67,10 @@
 
   <div class="tasks-grid" *ngIf="!isLoading && paginatedTasks.length > 0">
     <app-task-card 
-      *ngFor="let taskItem of paginatedTasks" 
-      [task]="taskItem"
-      (deleteRequested)="handleDeleteTask($event)">
-    </app-task-card>
+       *ngFor="let task of paginatedTasks; trackBy: trackByTaskId" 
+       [task]="task"
+       (deleteRequested)="handleDeleteTask($event)">
+</app-task-card>
   </div>
 
   <div class="pagination-container" *ngIf="!isLoading && totalPages > 1">

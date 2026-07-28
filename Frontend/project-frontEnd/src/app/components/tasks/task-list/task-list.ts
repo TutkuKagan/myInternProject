@@ -1,11 +1,20 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TaskCard } from '../task-card/task-card';
 import { TaskService } from '../../../core/services/TaskService';
 import { NotificationService } from '../../../core/services/NotificationService';
+import { StorageService } from '../../../core/services/storage';
 import { ITask } from '../../../shared/models/task.model';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+interface ITaskFilterPreferences {
+  statusFilter: string;
+  priorityFilter: string;
+  sortBy: string;
+  pageSize: number;
+}
 
 @Component({
   selector: 'app-task-list',
@@ -17,7 +26,9 @@ import { ITask } from '../../../shared/models/task.model';
 export class TaskList implements OnInit {
   private taskService = inject(TaskService);
   private notificationService = inject(NotificationService);
+  private storageService = inject(StorageService);
   private cdr = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
 
   allTasks: ITask[] = [];
   filteredTasks: ITask[] = [];
@@ -35,14 +46,27 @@ export class TaskList implements OnInit {
   pageSize: number = 3;
   totalPages: number = 1;
 
+  private readonly FILTER_STORAGE_KEY = 'task_list_user_filters';
+
   ngOnInit(): void {
+    this.loadSavedFilters();
     this.loadTasks();
+  }
+
+  private loadSavedFilters(): void {
+    const saved = this.storageService.getItem<ITaskFilterPreferences>(this.FILTER_STORAGE_KEY);
+    if (saved) {
+      this.statusFilter = saved.statusFilter ?? 'ALL';
+      this.priorityFilter = saved.priorityFilter ?? 'ALL';
+      this.sortBy = saved.sortBy ?? 'createdAt_desc';
+      this.pageSize = saved.pageSize ?? 3;
+    }
   }
 
   loadTasks(): void {
     this.isLoading = true;
 
-    this.taskService.getTasks().subscribe({
+    this.taskService.getTasks().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: any) => {
         this.isLoading = false;
         
@@ -68,6 +92,13 @@ export class TaskList implements OnInit {
   }
 
   applyFilters(): void {
+    this.storageService.setItem<ITaskFilterPreferences>(this.FILTER_STORAGE_KEY, {
+      statusFilter: this.statusFilter,
+      priorityFilter: this.priorityFilter,
+      sortBy: this.sortBy,
+      pageSize: this.pageSize
+    });
+
     let tempTasks = [...this.allTasks];
 
     if (this.searchTerm.trim() !== '') {
@@ -117,7 +148,6 @@ export class TaskList implements OnInit {
     const startIndex = (this.currentPage - 1) * this.pageSize;
     const endIndex = startIndex + this.pageSize;
     
-    // Ekrana sadece o sayfanın elemanlarını dilimleyip veriyoruz
     this.paginatedTasks = this.filteredTasks.slice(startIndex, endIndex);
   }
 
@@ -135,7 +165,7 @@ export class TaskList implements OnInit {
     const confirmed = await this.notificationService.confirm('Are you sure you want to delete this task?');
     if (!confirmed) return;
 
-    this.taskService.deleteTask(String(taskId)).subscribe({
+    this.taskService.deleteTask(String(taskId)).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.notificationService.showSuccess('Task deleted successfully.');
         this.allTasks = this.allTasks.filter(t => t.id !== taskId);
@@ -146,4 +176,8 @@ export class TaskList implements OnInit {
       }
     });
   }
+
+  trackByTaskId(index: number, task: ITask): string {
+  return task.id;
+}
 }

@@ -1,14 +1,16 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter , ChangeDetectionStrategy} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ITask } from '../../../shared/models/task.model';
+
 
 @Component({
   selector: 'app-task-card',
   standalone: true,
   imports: [CommonModule, RouterModule],
   templateUrl: './task-card.html',
-  styleUrl: './task-card.scss'
+  styleUrl: './task-card.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TaskCard {
   @Input() task!: any;

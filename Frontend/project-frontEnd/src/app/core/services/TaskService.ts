@@ -6,6 +6,8 @@ import { IApiResponse } from '../../shared/models/api-response.model';
 import { HttpHeaders } from '@angular/common/http';
 import { ITask, ITaskCreateDto, ITaskAttachment } from '../../shared/models/task.model';
 import { ITaskComment, ICreateComment } from '../../shared/models/task.model';
+import { CacheService } from '../services/cache';
+import { tap } from 'rxjs/operators';
 
 
 @Injectable({
@@ -14,7 +16,7 @@ import { ITaskComment, ICreateComment } from '../../shared/models/task.model';
 export class TaskService {
   private apiUrl = `http://localhost:5020/api/task`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,private cacheService: CacheService) {}
 
   getTasks(queryDto?: any): Observable<any> {
   const options = queryDto && Object.keys(queryDto).length > 0 ? { params: queryDto } : {};
@@ -26,8 +28,13 @@ export class TaskService {
   }
 
   createTask(taskData: Partial<ITask> | any): Observable<any> {
-  return this.http.post<any>(`${this.apiUrl}/createTask`, taskData);
-}
+  return this.http.post<any>(`${this.apiUrl}/createTask`, taskData).pipe(
+      tap(() => {
+        this.cacheService.clearAll();
+      })
+    );
+  };
+
 
   updateTask(id: string, taskData: any): Observable<any> {
   const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
